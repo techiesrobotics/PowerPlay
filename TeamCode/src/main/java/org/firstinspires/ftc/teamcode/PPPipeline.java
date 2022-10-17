@@ -25,17 +25,17 @@ public class PPPipeline extends OpenCvPipeline {
 
     // Lower and upper boundaries for colors
     private static final Scalar
-            lower_green_bound = new Scalar(200, 200, 0, 255),
-            upper_green_bound = new Scalar(255, 255, 130, 255),
-            lower_purple_bound = new Scalar(0, 200, 200, 255),
-            upper_purple_bound = new Scalar(150, 255, 255, 255),
-            lower_brown_bound = new Scalar(170, 0, 170, 255),
-            upper_magenta_bound = new Scalar(255, 60, 255, 255);
+            lower_green_bound = new Scalar(0, 100, 0, 255),
+            upper_green_bound = new Scalar(0, 255, 0, 255),
+            lower_purple_bound = new Scalar(100, 0, 100, 255),
+            upper_purple_bound = new Scalar(255, 0, 255, 255),
+            lower_brown_bound = new Scalar(100, 50, 0, 255),
+            upper_brown_bound = new Scalar(200, 100, 0, 255);
 
     // Color definitions
     private final Scalar
-            GREEN  = new Scalar(0, 255, 0),
-            PURPLE    = new Scalar(163, 0, 163),
+            GREEN = new Scalar(0, 255, 0),
+            PURPLE = new Scalar(163, 0, 163),
             BROWN = new Scalar(150, 75, 0);
 
     // Percent and mat definitions
@@ -66,7 +66,7 @@ public class PPPipeline extends OpenCvPipeline {
         // Gets channels from given source mat
         Core.inRange(blurredMat, lower_green_bound, upper_green_bound, greMat);
         Core.inRange(blurredMat, lower_purple_bound, upper_purple_bound, purMat);
-        Core.inRange(blurredMat, lower_brown_bound, upper_magenta_bound, broMat);
+        Core.inRange(blurredMat, lower_brown_bound, upper_brown_bound, broMat);
 
         // Gets color specific values
         grePercent = Core.countNonZero(greMat);
