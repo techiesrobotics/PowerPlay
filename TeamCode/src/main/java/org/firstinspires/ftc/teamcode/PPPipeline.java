@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -25,12 +27,12 @@ public class PPPipeline extends OpenCvPipeline {
 
     // Lower and upper boundaries for colors
     private static final Scalar
-            lower_green_bound = new Scalar(0, 100, 0, 255),
-            upper_green_bound = new Scalar(0, 255, 0, 255),
-            lower_purple_bound = new Scalar(0, 200, 200, 255),
-            upper_purple_bound = new Scalar(150, 255, 255, 255),
-            lower_brown_bound = new Scalar(170, 0, 170, 255),
-            upper_brown_bound = new Scalar(255, 60, 255, 255);
+            lower_green_bound = new Scalar(55, 83, 30),
+            upper_green_bound = new Scalar(86,185, 179),
+            lower_purple_bound = new Scalar(126, 78, 46),
+            upper_purple_bound = new Scalar(180, 255, 201),
+            lower_brown_bound = new Scalar(92,92,73),
+            upper_brown_bound = new Scalar(119, 172,192);
 
     // Color definitions
     private final Scalar
@@ -52,7 +54,7 @@ public class PPPipeline extends OpenCvPipeline {
             SLEEVE_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
     // Running variable storing the parking position
-    private volatile ParkingPosition position = ParkingPosition.LEFT;
+    private volatile ParkingPosition position = ParkingPosition.CENTER;
 
     @Override
     public Mat processFrame(Mat input) {
@@ -64,19 +66,21 @@ public class PPPipeline extends OpenCvPipeline {
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
 
+        Mat hsv = blurredMat.clone();
+        Imgproc.cvtColor(blurredMat, hsv, Imgproc.COLOR_BGR2HSV);
+
+
         // Gets channels from given source mat
-        Core.inRange(blurredMat, lower_green_bound, upper_green_bound, greMat);
-        Core.inRange(blurredMat, lower_purple_bound, upper_purple_bound, purMat);
-        Core.inRange(blurredMat, lower_brown_bound, upper_brown_bound, broMat);
+        Core.inRange(hsv, lower_green_bound, upper_green_bound, greMat);
+        Core.inRange(hsv, lower_purple_bound, upper_purple_bound, purMat);
+        Core.inRange(hsv, lower_brown_bound, upper_brown_bound, broMat);
 
         // Gets color specific values
         grePercent = Core.countNonZero(greMat);
         purPercent = Core.countNonZero(purMat);
         broPercent = Core.countNonZero(broMat);
-
         // Calculates the highest amount of pixels being covered on each side
         double maxPercent = Math.max(grePercent, Math.max(purPercent, broPercent));
-
         // Checks all percentages, will highlight bounding box in camera preview
         // based on what color is being detected
         if (maxPercent == grePercent) {
@@ -113,7 +117,7 @@ public class PPPipeline extends OpenCvPipeline {
         greMat.release();
         purMat.release();
         broMat.release();
-
+        hsv.release();
         return input;
     }
 

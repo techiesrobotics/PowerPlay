@@ -15,6 +15,7 @@ import org.opencv.features2d.MSER;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 /**
  * GRIPPripelinewithblobs class.
@@ -23,7 +24,7 @@ import org.opencv.objdetect.*;
  *
  * @author GRIP
  */
-public class GRIPPripelinewithblobs {
+public class GRIPPripelinewithblobs extends OpenCvPipeline {
 
     //Outputs
     private Mat cvResizeOutput = new Mat();
@@ -40,41 +41,6 @@ public class GRIPPripelinewithblobs {
      * This is the primary method that runs the entire pipeline and updates the outputs.
      */
     public void process(Mat source0) {
-        // Step CV_resize0:
-        Mat cvResizeSrc = source0;
-        Size cvResizeDsize = new Size(0, 0);
-        double cvResizeFx = 0.75;
-        double cvResizeFy = 0.75;
-        int cvResizeInterpolation = Imgproc.INTER_LINEAR;
-        cvResize(cvResizeSrc, cvResizeDsize, cvResizeFx, cvResizeFy, cvResizeInterpolation, cvResizeOutput);
-
-        // Step RGB_Threshold0:
-        Mat rgbThresholdInput = cvResizeOutput;
-        double[] rgbThresholdRed = {61.915467625899275, 108.78839590443685};
-        double[] rgbThresholdGreen = {112.15282903749842, 255.0};
-        double[] rgbThresholdBlue = {27.51798561151079, 150.56313993174064};
-        rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, rgbThresholdOutput);
-
-        // Step CV_erode0:
-        Mat cvErodeSrc = rgbThresholdOutput;
-        Mat cvErodeKernel = new Mat();
-        Point cvErodeAnchor = new Point(-1, -1);
-        double cvErodeIterations = 1;
-        int cvErodeBordertype = Core.BORDER_CONSTANT;
-        Scalar cvErodeBordervalue = new Scalar(-1);
-        cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, cvErodeOutput);
-
-        // Step Mask0:
-        Mat maskInput = cvResizeOutput;
-        Mat maskMask = cvErodeOutput;
-        mask(maskInput, maskMask, maskOutput);
-
-        // Step Find_Blobs0:
-        Mat findBlobsInput = cvErodeOutput;
-        double findBlobsMinArea = 0.0;
-        double[] findBlobsCircularity = {0.0, 1.0};
-        boolean findBlobsDarkBlobs = false;
-        findBlobs(findBlobsInput, findBlobsMinArea, findBlobsCircularity, findBlobsDarkBlobs, findBlobsOutput);
 
     }
 
@@ -250,7 +216,44 @@ public class GRIPPripelinewithblobs {
     }
 
 
+    @Override
+    public Mat processFrame(Mat input) {
+// Step CV_resize0:
+        Mat cvResizeSrc = input;
+        Size cvResizeDsize = new Size(0, 0);
+        double cvResizeFx = 0.75;
+        double cvResizeFy = 0.75;
+        int cvResizeInterpolation = Imgproc.INTER_LINEAR;
+        cvResize(cvResizeSrc, cvResizeDsize, cvResizeFx, cvResizeFy, cvResizeInterpolation, cvResizeOutput);
 
+        // Step RGB_Threshold0:
+        Mat rgbThresholdInput = cvResizeOutput;
+        double[] rgbThresholdRed = {61.915467625899275, 108.78839590443685};
+        double[] rgbThresholdGreen = {112.15282903749842, 255.0};
+        double[] rgbThresholdBlue = {27.51798561151079, 150.56313993174064};
+        rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue, rgbThresholdOutput);
 
+        // Step CV_erode0:
+        Mat cvErodeSrc = rgbThresholdOutput;
+        Mat cvErodeKernel = new Mat();
+        Point cvErodeAnchor = new Point(-1, -1);
+        double cvErodeIterations = 1;
+        int cvErodeBordertype = Core.BORDER_CONSTANT;
+        Scalar cvErodeBordervalue = new Scalar(-1);
+        cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, cvErodeOutput);
+
+        // Step Mask0:
+        Mat maskInput = cvResizeOutput;
+        Mat maskMask = cvErodeOutput;
+        mask(maskInput, maskMask, maskOutput);
+
+        // Step Find_Blobs0:
+        Mat findBlobsInput = cvErodeOutput;
+        double findBlobsMinArea = 0.0;
+        double[] findBlobsCircularity = {0.0, 1.0};
+        boolean findBlobsDarkBlobs = false;
+        findBlobs(findBlobsInput, findBlobsMinArea, findBlobsCircularity, findBlobsDarkBlobs, findBlobsOutput);
+        return null;
+    }
 }
 

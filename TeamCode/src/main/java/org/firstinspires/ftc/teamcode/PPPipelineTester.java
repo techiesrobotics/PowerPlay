@@ -9,6 +9,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 @Autonomous(name = "Pipeline Tester", group = "autonomous")
 //@Disabled - comment out this line before using
 public class PPPipelineTester extends LinearOpMode {
