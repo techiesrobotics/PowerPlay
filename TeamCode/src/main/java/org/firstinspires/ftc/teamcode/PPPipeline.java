@@ -12,6 +12,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class PPPipeline extends OpenCvPipeline {
+
     public enum ParkingPosition {
         LEFT,
         CENTER,
