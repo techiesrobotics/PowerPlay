@@ -32,7 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -57,10 +57,17 @@ public class TechiesOpMode extends LinearOpMode {
     // Declare OpMode members.
     TechiesHardware robot   = new TechiesHardware();
     private ElapsedTime runtime = new ElapsedTime();
-
+    TechiesHardwareWithoutDriveTrain robotCore;
+    double currentVelocity;
+    double maxVelocity = 0.0;
+    double currentPos;
+    double repetitions = 0.0;
 
     @Override
     public void runOpMode() {
+
+        robot.init(hardwareMap);
+        robotCore = new TechiesHardwareWithoutDriveTrain(hardwareMap);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         robot.init(hardwareMap);
@@ -105,6 +112,75 @@ public class TechiesOpMode extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+
+
+
+            //slides
+            //up
+            if (gamepad1.right_bumper)  {
+                robotCore.slides.rightSlide.setPower(-.75);
+                robotCore.slides.leftSlide.setPower(.75);
+            }
+
+            else {
+                robotCore.slides.rightSlide.setPower(0);
+                robotCore.slides.leftSlide.setPower(0);
+            }
+
+            //down
+            if (gamepad1.left_bumper)  {
+                robotCore.slides.rightSlide.setPower(.75);
+                robotCore.slides.leftSlide.setPower(-.75);
+            }
+
+            else {
+                robotCore.slides.rightSlide.setPower(0);
+                robotCore.slides.leftSlide.setPower(0);
+            }
+            if (gamepad1.a) {
+                SlideMovementPID( 800);
+            }
+            if (gamepad1.b) {
+                SlideMovementPID( 0);
+            }
+            if (gamepad1.x) {
+                SlideMovementPID( -1400);
+            }
+            if (gamepad1.y) {
+                SlideMovementPID( 2000);
+            }
+            if (gamepad1.dpad_right) {
+                robotCore.claw.setPosition(0);
+            }
+            if (gamepad1.dpad_left) {
+                robotCore.claw.setPosition(1);
+            }
         }
+    }
+    protected void SlideMovementPID (int targetPosition) {
+        telemetry.addData("SlideMovementPID", "start SlideMovementPID");
+        robotCore.slides.setTargetPosition(targetPosition,-targetPosition);
+        robotCore.slides.rightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        robotCore.slides.leftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if (robotCore.slides.rightSlide.isBusy() && repetitions < 800) {
+            robotCore.slides.setRiserPower(0.8,0.8);
+        }
+        else {
+            robotCore.slides.setRiserPower(0,0);
+            repetitions = 0;
+        }
+        currentVelocity = robotCore.slides.rightSlide.getVelocity();
+        currentPos = robotCore.slides.leftSlide.getCurrentPosition();
+        if (currentVelocity > maxVelocity)
+            maxVelocity = currentVelocity;
+
+        telemetry.addData("current velocity", currentVelocity);
+        telemetry.addData("current position", currentPos);
+        telemetry.addData("position delta", currentPos- robotCore.slides.rightSlide.getTargetPosition());
+        telemetry.addData("power", robotCore.slides.rightSlide.getPower());
+        telemetry.addData("repetitions", repetitions);
+        telemetry.update();
+        repetitions++;
     }
 }
