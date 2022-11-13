@@ -33,15 +33,15 @@ public class PPPipelineTester extends LinearOpMode {
 
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        /*webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        GainControl gainControl = webcam.getGainControl();
+        /*GainControl gainControl = webcam.getGainControl();
         webcam.getGainControl();
         gainControl.setGain(gainControl.getMaxGain());
 //cmonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         ExposureControl exposureControl = webcam.getExposureControl();
         exposureControl.setMode(ExposureControl.Mode.Manual);
-        exposureControl.setExposure(currentExposure, TimeUnit.NANOSECONDS); */
+        exposureControl.setExposure(currentExposure, TimeUnit.NANOSECONDS);*/
         pipeline = new PPPipeline();
         webcam.setPipeline(pipeline);
 

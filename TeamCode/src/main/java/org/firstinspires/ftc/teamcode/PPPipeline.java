@@ -28,12 +28,12 @@ public class PPPipeline extends OpenCvPipeline {
 
     // Lower and upper boundaries for colors
     private static final Scalar
-            lower_green_bound = new Scalar(55, 83, 30),
-            upper_green_bound = new Scalar(86,185, 179),
-            lower_purple_bound = new Scalar(126, 78, 46),
-            upper_purple_bound = new Scalar(180, 255, 201),
-            lower_brown_bound = new Scalar(92,92,73),
-            upper_brown_bound = new Scalar(119, 172,192);
+            lower_green_bound = new Scalar(37, 34, 0),
+            upper_green_bound = new Scalar(34,179, 255),
+            lower_purple_bound = new Scalar(147, 99, 0),
+            upper_purple_bound = new Scalar(180, 255, 255),
+            lower_brown_bound = new Scalar(91,165,30),
+            upper_brown_bound = new Scalar(125, 255,255);
 
     // Color definitions
     private final Scalar
