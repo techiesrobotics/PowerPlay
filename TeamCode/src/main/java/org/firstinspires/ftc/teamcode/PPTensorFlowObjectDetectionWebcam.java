@@ -85,7 +85,7 @@ public class PPTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AWNT9KL/////AAABmVVE0/4aqEuZrZe7Bl0MhilGF88MQ6YYAPiflg2G1Om6F0TrH1ULZwVWI3X/RX5B+FrBmEImMBNB/p5nSnv+67+l1vVeOANwjHuFBU8Jb3kmDZH5cs8a/FNwZqAkwbKk+iCfOeFXnRMQ8kT4g4ndkcYZfbq2LkLp5paPvLMP2uk2ufO+qmqLPmRjWANSj7ltPhpdx3OR62AcQs9WV4M9celQ5SA0coKTUQuPVOclVq5sYZa98GWZ1oBex3mnvsEoP1TWubHw7dxDIZLc3aXkdyEAIXDnHFO1gHBY2/aGRlCZtrW3ep+Hgqaw8iYkLw1r+qMBQvEgmxv7TgmjbsTlo6mCLAnI/cHYjCrDAZH5UIPV";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
