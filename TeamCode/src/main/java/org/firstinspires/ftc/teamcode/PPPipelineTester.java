@@ -5,10 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+//import org.openftc.easyopencv.;
+
+import java.util.concurrent.TimeUnit;
+
 @Autonomous(name = "Pipeline Tester", group = "autonomous")
 //@Disabled - comment out this line before using
 public class PPPipelineTester extends LinearOpMode {
@@ -28,6 +34,13 @@ public class PPPipelineTester extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+
+        /*GainControl gainControl = webcam.getGainControl();
+        webcam.getGainControl();
+        gainControl.setGain(gainControl.getMaxGain());
+        ExposureControl exposureControl = webcam.getExposureControl();
+        exposureControl.setMode(ExposureControl.Mode.Manual);
+        exposureControl.setExposure(currentExposure, TimeUnit.NANOSECONDS);*/
         pipeline = new PPPipeline();
         webcam.setPipeline(pipeline);
 

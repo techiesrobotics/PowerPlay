@@ -10,6 +10,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class PPPipeline extends OpenCvPipeline {
+
     public enum ParkingPosition {
         LEFT,
         CENTER,
@@ -17,30 +18,31 @@ public class PPPipeline extends OpenCvPipeline {
     }
 
     // TOPLEFT anchor point for the bounding box
-    private static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(145, 168);
+    private static Point SLEEVE_TOPLEFT_ANCHOR_POINT = new Point(320, 168);
 
     // Width and height for the bounding box
-    public static int REGION_WIDTH = 30;
-    public static int REGION_HEIGHT = 50;
+    public static int REGION_WIDTH = 75;
+    public static int REGION_HEIGHT = 100;
 
     // Lower and upper boundaries for colors
     private static final Scalar
-            lower_green_bound = new Scalar(200, 200, 0, 255),
-            upper_green_bound = new Scalar(255, 255, 130, 255),
-            lower_purple_bound = new Scalar(0, 200, 200, 255),
-            upper_purple_bound = new Scalar(150, 255, 255, 255),
-            lower_brown_bound = new Scalar(170, 0, 170, 255),
-            upper_magenta_bound = new Scalar(255, 60, 255, 255);
+            lower_green_bound = new Scalar(28, 0, 0),
+            upper_green_bound = new Scalar(89,255, 220),
+            lower_purple_bound = new Scalar(123, 50, 50),
+            upper_purple_bound = new Scalar(180, 135, 211),
+            lower_cyan_bound = new Scalar(66,50,0),
+            upper_cyan_bound = new Scalar(114, 144,255);
 
     // Color definitions
     private final Scalar
             GREEN  = new Scalar(0, 255, 0),
             PURPLE    = new Scalar(163, 0, 163),
-            BROWN = new Scalar(150, 75, 0);
+
+            CYAN = new Scalar(0, 255,255);
 
     // Percent and mat definitions
-    private double grePercent, purPercent, broPercent;
-    private Mat greMat = new Mat(), purMat = new Mat(), broMat = new Mat(), blurredMat = new Mat();
+    private double grePercent, purPercent, cyanPercent;
+    private Mat greMat = new Mat(), purMat = new Mat(), cyanMat = new Mat(), blurredMat = new Mat();
 
     // Anchor point definitions
     Point sleeve_pointA = new Point(
@@ -51,7 +53,7 @@ public class PPPipeline extends OpenCvPipeline {
             SLEEVE_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
     // Running variable storing the parking position
-    private volatile ParkingPosition position = ParkingPosition.LEFT;
+    private volatile ParkingPosition position = ParkingPosition.CENTER;
 
     @Override
     public Mat processFrame(Mat input) {
@@ -63,19 +65,21 @@ public class PPPipeline extends OpenCvPipeline {
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
         Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
 
+        Mat hsv = blurredMat.clone();
+        Imgproc.cvtColor(blurredMat, hsv, Imgproc.COLOR_BGR2HSV);
+
+
         // Gets channels from given source mat
-        Core.inRange(blurredMat, lower_green_bound, upper_green_bound, greMat);
-        Core.inRange(blurredMat, lower_purple_bound, upper_purple_bound, purMat);
-        Core.inRange(blurredMat, lower_brown_bound, upper_magenta_bound, broMat);
+        Core.inRange(hsv, lower_green_bound, upper_green_bound, greMat);
+        Core.inRange(hsv, lower_purple_bound, upper_purple_bound, purMat);
+        Core.inRange(hsv, lower_cyan_bound, upper_cyan_bound, cyanMat);
 
         // Gets color specific values
         grePercent = Core.countNonZero(greMat);
         purPercent = Core.countNonZero(purMat);
-        broPercent = Core.countNonZero(broMat);
-
+        cyanPercent = Core.countNonZero(cyanMat);
         // Calculates the highest amount of pixels being covered on each side
-        double maxPercent = Math.max(grePercent, Math.max(purPercent, broPercent));
-
+        double maxPercent = Math.max(grePercent, Math.max(purPercent, cyanPercent));
         // Checks all percentages, will highlight bounding box in camera preview
         // based on what color is being detected
         if (maxPercent == grePercent) {
@@ -96,13 +100,13 @@ public class PPPipeline extends OpenCvPipeline {
                     PURPLE,
                     2
             );
-        } else if (maxPercent == broPercent) {
+        } else if (maxPercent == cyanPercent) {
             position = ParkingPosition.RIGHT;
             Imgproc.rectangle(
                     input,
                     sleeve_pointA,
                     sleeve_pointB,
-                    BROWN,
+                    CYAN,
                     2
             );
         }
@@ -111,8 +115,8 @@ public class PPPipeline extends OpenCvPipeline {
         blurredMat.release();
         greMat.release();
         purMat.release();
-        broMat.release();
-
+        cyanMat.release();
+        hsv.release();
         return input;
     }
 
