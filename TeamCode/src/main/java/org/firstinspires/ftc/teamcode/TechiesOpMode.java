@@ -143,7 +143,7 @@ public class TechiesOpMode extends LinearOpMode {
                     robotCore.claw.setPosition(0);
                     sleep(200);
                 }
-                if (robotCore.claw.getPosition() <= 0.5) {
+                else if (robotCore.claw.getPosition() <= 0.5) {
                     robotCore.claw.setPosition(1);
                     sleep(200);
                 }
