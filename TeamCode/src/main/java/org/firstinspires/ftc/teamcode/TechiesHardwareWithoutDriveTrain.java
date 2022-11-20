@@ -63,8 +63,8 @@ public class TechiesHardwareWithoutDriveTrain
     public TechiesSlideHardware slides = null;
     public Servo   claw = null;
 
-    //public DcMotor  leftSlide    = null;
-    //public DcMotor  rightSlide   = null;
+    public DcMotor  leftSlide    = null;
+    public DcMotor  rightSlide   = null;
 
 
     /* local OpMode members. */
@@ -95,7 +95,8 @@ public class TechiesHardwareWithoutDriveTrain
         //leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         //rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         //leftBack.setDirection(DcMotor.Direction.REVERSE);
-        //rightBack.setDirection(DcMotor.Direction.FORWARD);// leftSlide.setDirection(DcMotor.Direction.REVERSE);
+        //rightBack.setDirection(DcMotor.Direction.FORWARD);
+        //leftSlide.setDirection(DcMotor.Direction.REVERSE);
         //rightSlide.setDirection(DcMotor.Direction.REVERSE);
 
 
@@ -115,7 +116,7 @@ public class TechiesHardwareWithoutDriveTrain
         //rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 

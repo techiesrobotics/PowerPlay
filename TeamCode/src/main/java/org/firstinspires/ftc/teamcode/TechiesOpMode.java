@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class TechiesOpMode extends LinearOpMode {
 
     // Declare OpMode members.
@@ -129,35 +129,29 @@ public class TechiesOpMode extends LinearOpMode {
 
             //down
             if (gamepad1.left_bumper)  {
-                robotCore.slides.rightSlide.setPower(.75);
-                robotCore.slides.leftSlide.setPower(-.75);
+                robotCore.slides.rightSlide.setPower(1);
+                robotCore.slides.leftSlide.setPower(-1);
             }
 
             else {
                 robotCore.slides.rightSlide.setPower(0);
                 robotCore.slides.leftSlide.setPower(0);
             }
+
             if (gamepad1.a) {
-                SlideMovementPID( 800);
+                if (robotCore.claw.getPosition() > 0.5) {
+                    robotCore.claw.setPosition(0);
+                    sleep(200);
+                }
+                else if (robotCore.claw.getPosition() <= 0.5) {
+                    robotCore.claw.setPosition(1);
+                    sleep(200);
+                }
             }
-            if (gamepad1.b) {
-                SlideMovementPID( 0);
-            }
-            if (gamepad1.x) {
-                SlideMovementPID( -1400);
-            }
-            if (gamepad1.y) {
-                SlideMovementPID( 2000);
-            }
-            if (gamepad1.dpad_right) {
-                robotCore.claw.setPosition(0);
-            }
-            if (gamepad1.dpad_left) {
-                robotCore.claw.setPosition(1);
-            }
+
         }
     }
-    protected void SlideMovementPID (int targetPosition) {
+    /*protected void SlideMovementPID (int targetPosition) {
         telemetry.addData("SlideMovementPID", "start SlideMovementPID");
         robotCore.slides.setTargetPosition(targetPosition,-targetPosition);
         robotCore.slides.rightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -183,4 +177,6 @@ public class TechiesOpMode extends LinearOpMode {
         telemetry.update();
         repetitions++;
     }
+
+     */
 }

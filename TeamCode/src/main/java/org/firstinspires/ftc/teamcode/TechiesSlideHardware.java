@@ -55,8 +55,8 @@ public class TechiesSlideHardware
 {
     /* Public OpMode members. hi*/
 
-    public DcMotorEx  leftSlide    = null;
-    public DcMotorEx  rightSlide   = null;
+    public DcMotor  leftSlide    = null;
+    public DcMotor  rightSlide   = null;
 
 
     /* local OpMode members. */
@@ -70,11 +70,15 @@ public class TechiesSlideHardware
 
         // Define and Initialize Motors
 
-        leftSlide  = hwMap.get(DcMotorEx.class, "leftslide");
-        rightSlide    = hwMap.get(DcMotorEx.class, "rightslide");
+        leftSlide  = hwMap.get(DcMotor.class, "leftslide");
+        rightSlide    = hwMap.get(DcMotor.class, "rightslide");
 
-        setUpMotor(leftSlide);
-        setUpMotor(rightSlide);
+        leftSlide.setDirection(DcMotor.Direction.REVERSE);
+        rightSlide.setDirection(DcMotor.Direction.REVERSE);
+        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // setUpMotor(leftSlide);
+        //setUpMotor(rightSlide);
 
 
 
@@ -82,7 +86,7 @@ public class TechiesSlideHardware
 
     /* Initialize standard Hardware interfaces */
 
-    private void setUpMotor(DcMotorEx aMotor) {
+    /*private void setUpMotor(DcMotorEx aMotor) {
         aMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         aMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         aMotor.setVelocityPIDFCoefficients(1.40,.120, 0,10.996); //Change these
@@ -91,6 +95,8 @@ public class TechiesSlideHardware
         aMotor.setDirection(DcMotorEx.Direction.FORWARD);
             //change
     }
+
+     */
 
     public void setRiserPower(double leftRiserPower, double rightRiserPower){
         leftSlide.setPower(leftRiserPower);
