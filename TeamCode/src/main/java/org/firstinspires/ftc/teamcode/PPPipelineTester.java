@@ -38,7 +38,6 @@ public class PPPipelineTester extends LinearOpMode {
         /*GainControl gainControl = webcam.getGainControl();
         webcam.getGainControl();
         gainControl.setGain(gainControl.getMaxGain());
-//cmonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         ExposureControl exposureControl = webcam.getExposureControl();
         exposureControl.setMode(ExposureControl.Mode.Manual);
         exposureControl.setExposure(currentExposure, TimeUnit.NANOSECONDS);*/
