@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DriverControlOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -35,6 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.TechiesHardware;
+import org.firstinspires.ftc.teamcode.TechiesHardwareWithoutDriveTrain;
 
 
 /**
@@ -52,7 +55,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
 //@Disabled
-public class TechiesOpMode extends LinearOpMode {
+public abstract class TechiesOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     TechiesHardware robot   = new TechiesHardware();
@@ -63,6 +66,10 @@ public class TechiesOpMode extends LinearOpMode {
     double currentPos;
     double repetitions = 0.0;
 
+    abstract public double getTurn() ;
+    abstract public double getDrivefb();
+    abstract public double getDrivelr();
+    abstract public void moveSlide();
     @Override
     public void runOpMode() {
 
@@ -92,9 +99,9 @@ public class TechiesOpMode extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            double turn = gamepad1.right_stick_x;
-            double drivefb  = -gamepad1.left_stick_y;
-            double drivelr = gamepad1.left_stick_x;
+            double turn = getTurn();
+            double drivefb  = getDrivefb();  //-gamepad1.left_stick_y;
+            double drivelr = getDrivelr(); //gamepad1.left_stick_x;
 
             leftPower    = Range.clip(drivefb + turn + drivelr, -1.0, 1.0) ;
             rightPower   = Range.clip(drivefb - turn - drivelr, -1.0, 1.0) ;
@@ -117,26 +124,7 @@ public class TechiesOpMode extends LinearOpMode {
 
             //slides
             //up
-            if (gamepad1.right_bumper)  {
-                robotCore.slides.rightSlide.setPower(-.75);
-                robotCore.slides.leftSlide.setPower(.75);
-            }
-
-            else {
-                robotCore.slides.rightSlide.setPower(0);
-                robotCore.slides.leftSlide.setPower(0);
-            }
-
-            //down
-            if (gamepad1.left_bumper)  {
-                robotCore.slides.rightSlide.setPower(1);
-                robotCore.slides.leftSlide.setPower(-1);
-            }
-
-            else {
-                robotCore.slides.rightSlide.setPower(0);
-                robotCore.slides.leftSlide.setPower(0);
-            }
+            moveSlide();
 
             if (gamepad1.a) {
                 if (robotCore.claw.getPosition() > 0.5) {
@@ -151,6 +139,10 @@ public class TechiesOpMode extends LinearOpMode {
 
         }
     }
+
+
+
+
     /*protected void SlideMovementPID (int targetPosition) {
         telemetry.addData("SlideMovementPID", "start SlideMovementPID");
         robotCore.slides.setTargetPosition(targetPosition,-targetPosition);
