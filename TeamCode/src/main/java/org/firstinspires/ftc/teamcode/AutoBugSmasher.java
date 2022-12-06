@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -55,8 +54,8 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-@Autonomous(name = "AutoBlueRight", group = "ConceptBlue")
-public class AutoBlueRight extends LinearOpMode {
+@Autonomous(name = "AutoBugSmasher", group = "Conceptbugsmasher")
+public class AutoBugSmasher extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
@@ -221,11 +220,11 @@ public class AutoBlueRight extends LinearOpMode {
 
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
-        dropCone();
+        /*dropCone();
         pickupCone();
         goToJunction();
         dropCone();
-        park();
+        park();*/
     }
 
     protected void goToJunctionFromStart(){
@@ -233,6 +232,7 @@ public class AutoBlueRight extends LinearOpMode {
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(51)
+                //.strafeLeft(0)
                 .build();
         robot.slides.rightSlide.setPower(.55);
         robot.slides.leftSlide.setPower(-.55);
@@ -240,7 +240,11 @@ public class AutoBlueRight extends LinearOpMode {
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
         odoDriveTrain.turn(Math.toRadians(-47));
+        Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
         forward(9);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
 /*
     protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
@@ -260,12 +264,8 @@ public class AutoBlueRight extends LinearOpMode {
     }
     protected void pickupCone(){
         back(9);
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(137));
         forward(25);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
         robot.slides.rightSlide.setPower(-.8);
         robot.slides.leftSlide.setPower(.8);
         sleep(550);
@@ -281,12 +281,8 @@ public class AutoBlueRight extends LinearOpMode {
     }
     protected void goToJunction()   {
         back(25);
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(-137));
         forward(9);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
     }
 
     protected void park() {
@@ -295,12 +291,9 @@ public class AutoBlueRight extends LinearOpMode {
             back(9);
             odoDriveTrain.turn(Math.toRadians(137));
             forward(25);
-            Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-            odoDriveTrain.setPoseEstimate(startPose2);
         }
         else if (targetZone == 2) {
             back(9);
-
             odoDriveTrain.turn(Math.toRadians(47));
             back(7);
         }
@@ -319,8 +312,6 @@ public class AutoBlueRight extends LinearOpMode {
                 .back(inches)
                 .build();
         odoDriveTrain.followTrajectory(back);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
 
     }
     protected void forward (int inches){
@@ -330,8 +321,7 @@ public class AutoBlueRight extends LinearOpMode {
                 .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
+
     }
     protected void lineToSpline(int x, int y, int degrees){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
