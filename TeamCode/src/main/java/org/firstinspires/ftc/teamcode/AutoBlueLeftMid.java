@@ -54,8 +54,8 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-@Autonomous(name = "AutoBugSmasher", group = "Conceptbugsmasher")
-public class AutoBugSmasher extends LinearOpMode {
+@Autonomous(name = "AutoBlueRightMid", group = "ConceptBlue")
+public class AutoBlueLeftMid extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
@@ -63,8 +63,10 @@ public class AutoBugSmasher extends LinearOpMode {
             "2 Bulb",
             "3 Panel"
     };
+    double SlidePowerInit = .6;
     int TARGET_LEVEL_DEFAULT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
+
     SampleMecanumDrive odoDriveTrain;
     TechiesHardwareWithoutDriveTrain robot ;
     /*double currentVelocity;
@@ -220,8 +222,8 @@ public class AutoBugSmasher extends LinearOpMode {
 
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
-        /*dropCone();
-        pickupCone();
+        dropCone();
+       /* pickupCone();
         goToJunction();
         dropCone();
         park();*/
@@ -231,21 +233,16 @@ public class AutoBugSmasher extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
-                .forward(51)
-                //.strafeLeft(0)
+                .forward(20)
                 .build();
-        robot.slides.rightSlide.setPower(.55);
-        robot.slides.leftSlide.setPower(-.55);
+        robot.slides.rightSlide.setPower(.35);
+        robot.slides.leftSlide.setPower(-.35);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        Pose2d startPose2 = goToJunctionFromStart.end();
         odoDriveTrain.setPoseEstimate(startPose2);
         odoDriveTrain.turn(Math.toRadians(-47));
-        Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        forward(9);
-        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-       // StartPose3.
+        forward(4);
     }
 /*
     protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
@@ -255,8 +252,8 @@ public class AutoBugSmasher extends LinearOpMode {
    */
     protected void dropCone()   {
         robot.claw.setPosition(0);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
+        robot.slides.rightSlide.setPower(-.4);
+        robot.slides.leftSlide.setPower(.4);
         sleep(850);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
@@ -265,25 +262,33 @@ public class AutoBugSmasher extends LinearOpMode {
     }
     protected void pickupCone(){
         back(9);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(137));
         forward(25);
-        robot.slides.rightSlide.setPower(-.8);
-        robot.slides.leftSlide.setPower(.8);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+        robot.slides.rightSlide.setPower(-.6);
+        robot.slides.leftSlide.setPower(.6);
         sleep(550);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         robot.claw.setPosition(1);
         sleep(650);
-        robot.slides.rightSlide.setPower(.6);
-        robot.slides.leftSlide.setPower(-.6);
+        robot.slides.rightSlide.setPower(.4);
+        robot.slides.leftSlide.setPower(-.4);
         sleep(500);
 
 
     }
     protected void goToJunction()   {
         back(25);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(-137));
         forward(9);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
 
     protected void park() {
@@ -292,9 +297,12 @@ public class AutoBugSmasher extends LinearOpMode {
             back(9);
             odoDriveTrain.turn(Math.toRadians(137));
             forward(25);
+            Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+            odoDriveTrain.setPoseEstimate(startPose2);
         }
         else if (targetZone == 2) {
             back(9);
+
             odoDriveTrain.turn(Math.toRadians(47));
             back(7);
         }
@@ -313,16 +321,20 @@ public class AutoBugSmasher extends LinearOpMode {
                 .back(inches)
                 .build();
         odoDriveTrain.followTrajectory(back);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
 
     }
     protected void forward (int inches){
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
+        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);*/
         Trajectory forward = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
                 .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
-
+       // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        Pose2d startPose2 = forward.end();
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
     protected void lineToSpline(int x, int y, int degrees){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));

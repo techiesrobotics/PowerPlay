@@ -53,9 +53,9 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
+@Autonomous(name = "AutoRedLeftMid", group = "ConceptRed")
 //@Disabled
-@Autonomous(name = "AutoBugSmasher", group = "Conceptbugsmasher")
-public class AutoBugSmasher extends LinearOpMode {
+public class AutoRedLeftMid extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
@@ -220,11 +220,11 @@ public class AutoBugSmasher extends LinearOpMode {
 
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
-        /*dropCone();
+        dropCone();
         pickupCone();
         goToJunction();
         dropCone();
-        park();*/
+        park();
     }
 
     protected void goToJunctionFromStart(){
@@ -232,7 +232,6 @@ public class AutoBugSmasher extends LinearOpMode {
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(51)
-                //.strafeLeft(0)
                 .build();
         robot.slides.rightSlide.setPower(.55);
         robot.slides.leftSlide.setPower(-.55);
@@ -240,12 +239,7 @@ public class AutoBugSmasher extends LinearOpMode {
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
         odoDriveTrain.turn(Math.toRadians(-47));
-        Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
         forward(9);
-        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-       // StartPose3.
     }
 /*
     protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
@@ -313,7 +307,8 @@ public class AutoBugSmasher extends LinearOpMode {
                 .back(inches)
                 .build();
         odoDriveTrain.followTrajectory(back);
-
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
     protected void forward (int inches){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -322,7 +317,8 @@ public class AutoBugSmasher extends LinearOpMode {
                 .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
-
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
     protected void lineToSpline(int x, int y, int degrees){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -331,6 +327,8 @@ public class AutoBugSmasher extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(degrees)))
                 .build();
         odoDriveTrain.followTrajectory(linetospline);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
 
 

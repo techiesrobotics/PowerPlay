@@ -64,6 +64,7 @@ public class AutoBlueRight extends LinearOpMode {
             "2 Bulb",
             "3 Panel"
     };
+    double SlidePowerInit = .6;
     int TARGET_LEVEL_DEFAULT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
     SampleMecanumDrive odoDriveTrain;
