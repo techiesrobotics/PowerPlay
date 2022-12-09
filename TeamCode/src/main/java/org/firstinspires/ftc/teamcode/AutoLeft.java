@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -55,8 +54,8 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-@Autonomous(name = "AutoBlueRight", group = "ConceptBlue")
-public class AutoBlueRight extends LinearOpMode {
+@Autonomous(name = "AutoLeftTallGoal", group = "ConceptBlue")
+public class AutoLeft extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {

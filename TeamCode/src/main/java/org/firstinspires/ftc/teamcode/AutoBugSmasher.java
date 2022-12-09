@@ -243,7 +243,7 @@ public class AutoBugSmasher extends LinearOpMode {
         Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
         forward(9);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
 /*

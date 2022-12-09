@@ -53,9 +53,9 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "AutoRedLeft", group = "ConceptRed")
+@Autonomous(name = "AutoRight", group = "ConceptRed")
 //@Disabled
-public class AutoRedLeft extends LinearOpMode {
+public class AutoRight extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
