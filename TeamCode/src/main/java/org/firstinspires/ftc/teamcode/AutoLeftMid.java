@@ -235,8 +235,8 @@ public class AutoLeftMid extends LinearOpMode {
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(25)
                 .build();
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
+        robot.slides.rightSlide.setPower(.5);
+        robot.slides.leftSlide.setPower(-.5);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
         //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         Pose2d startPose2 = goToJunctionFromStart.end();
