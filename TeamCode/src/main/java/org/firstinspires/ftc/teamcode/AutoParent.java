@@ -331,26 +331,6 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.setPoseEstimate(startPose2);
     }
 
-    protected void park() {
-
-        if (targetZone == 1) {
-            back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
-            forward(25);
-
-        }
-        else if (targetZone == 2) {
-            back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
-        }
-        else if (targetZone == 3) {
-            back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
-            back(24);
-
-        }
-
-    }
     protected void back(int inches){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
@@ -393,4 +373,6 @@ abstract public class AutoParent extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
     public abstract double adjustTurn(double angle);
+    protected abstract void park();
+
 }
