@@ -39,8 +39,14 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.CV.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,69 +60,163 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-@Autonomous(name = "AutoLeftMidGoal", group = "ConceptBlue")
-public class AutoLeftMid extends LinearOpMode {
+@Autonomous(name = "AutoLeftMidGoalAprilTag", group = "ConceptBlue")
+public class AutoLeftMidAprilTag extends LinearOpMode {
 
-    protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
-    private static final String[] LABELS = {
-            "1 Bolt",
-            "2 Bulb",
-            "3 Panel"
-    };
     double SlidePowerInit = .6;
-    int TARGET_LEVEL_DEFAULT = 3;
+    int TARGET_LEVEL_DEFAULT = 1;
     int targetZone = TARGET_LEVEL_DEFAULT;
 
     SampleMecanumDrive odoDriveTrain;
     TechiesHardwareWithoutDriveTrain robot ;
-    /*double currentVelocity;
-    double maxVelocity = 0.0;
-    double currentPos;
-    double repetitions = 0;*/
 
-    //SlideMovementPIDController pidController;
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
-    /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     */
-    protected static final String VUFORIA_KEY =
-            "AWNT9KL/////AAABmVVE0/4aqEuZrZe7Bl0MhilGF88MQ6YYAPiflg2G1Om6F0TrH1ULZwVWI3X/RX5B+FrBmEImMBNB/p5nSnv+67+l1vVeOANwjHuFBU8Jb3kmDZH5cs8a/FNwZqAkwbKk+iCfOeFXnRMQ8kT4g4ndkcYZfbq2LkLp5paPvLMP2uk2ufO+qmqLPmRjWANSj7ltPhpdx3OR62AcQs9WV4M9celQ5SA0coKTUQuPVOclVq5sYZa98GWZ1oBex3mnvsEoP1TWubHw7dxDIZLc3aXkdyEAIXDnHFO1gHBY2/aGRlCZtrW3ep+Hgqaw8iYkLw1r+qMBQvEgmxv7TgmjbsTlo6mCLAnI/cHYjCrDAZH5UIPV";
+    static final double FEET_PER_METER = 3.28084;
 
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
-    protected VuforiaLocalizer vuforia;
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
 
-    /**
-     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-     * Detection engine.
-     */
-    protected TFObjectDetector tfod;
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    //Tag Id for sleeve
+    int Left = 5; // Tag ID 18 from the 36h11 family
+    int Middle = 6;
+    int Right = 7;
+    AprilTagDetection tagOfInterest = null;
+
 
     @Override
     public void runOpMode() {
         robot = new TechiesHardwareWithoutDriveTrain(hardwareMap);
         odoDriveTrain = new SampleMecanumDrive(hardwareMap);
-        // set up camera
-        initVuforia();
-        initTfod();
-        //activateCamera();
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
+        telemetry.setMsTransmissionInterval(50);
+
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
+        while (!isStarted() && !isStopRequested())
+        {
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+
+            if(currentDetections.size() != 0)
+            {
+                boolean tagFound = false;
+
+                for(AprilTagDetection tag : currentDetections)
+                {
+                    if(tag.id == Left || tag.id == Middle || tag.id == Right)
+                    {
+                        tagOfInterest = tag;
+                        tagFound = true;
+                        break;
+                    }
+                }
+
+                if(tagFound)
+                {
+                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                    tagToTelemetry(tagOfInterest);
+                    if (tagOfInterest.id == Left){
+                        telemetry.addLine("Target Zone: Left");
+                        targetZone = 1;
+                    }
+                    else if (tagOfInterest.id == Middle){
+                        telemetry.addLine("Target Zone: Middle");
+                        targetZone = 2;
+                    }
+                    else if (tagOfInterest.id == Right){
+                        telemetry.addLine("Target Zone: Right");
+                        targetZone = 3;
+                    }
+                }
+                else
+                {
+                    telemetry.addLine("Don't see tag of interest :(");
+
+                    if(tagOfInterest == null)
+                    {
+                        telemetry.addLine("(The tag has never been seen)");
+                    }
+                    else
+                    {
+                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                        tagToTelemetry(tagOfInterest);
+                    }
+                }
+
+            }
+            else
+            {
+                telemetry.addLine("Don't see tag of interest :(");
+
+                if(tagOfInterest == null)
+                {
+                    telemetry.addLine("(The tag has never been seen)");
+                }
+                else
+                {
+                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    tagToTelemetry(tagOfInterest);
+                }
+
+            }
+
+            telemetry.update();
+            sleep(20);
+        }
+
+        /*
+         * The START command just came in: now work off the latest snapshot acquired
+         * during the init loop.
+         */
+
+        /* Update the telemetry */
+        if(tagOfInterest != null)
+        {
+            telemetry.addLine("Tag snapshot:\n");
+            tagToTelemetry(tagOfInterest);
+            telemetry.update();
+        }
+        else
+        {
+            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+            telemetry.update();
+        }
+
 
         // Wait for the game to begin
-        if (tfod != null) {
-            tfod.activate();
-            tfod.setZoom(1.0, 16.0/9.0);
-        }
+
         robot.claw.setPosition(1);
         targetZone = determineLevel();
         telemetry.addData("Target Zone", targetZone);
@@ -134,88 +234,9 @@ public class AutoLeftMid extends LinearOpMode {
     }
 
     protected int determineLevel() {
-        while (!opModeIsActive()) {
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    telemetry.addData("# Objects Detected", updatedRecognitions.size());
-
-                    // step through the list of recognitions and display image position/size information for each one
-                    // Note: "Image number" refers to the randomized image orientation/number
-                    for (Recognition recognition : updatedRecognitions) {
-                        double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
-                        double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-                        double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
-                        double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
-
-                        telemetry.addData(""," ");
-                        telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
-                        telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
-                        telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
-
-                        if (recognition.getLabel().equals("1 Bolt")){
-                            targetZone = 1;
-                            telemetry.addData(String.format(" target zone: "), targetZone);
-                        }
-                        else if (recognition.getLabel().equals("2 Bulb")){
-                            targetZone = 2;
-                            telemetry.addData(String.format(" target zone: "), targetZone);
-                        }
-                        else if (recognition.getLabel().equals("3 Panel")){
-                            targetZone = 3;
-                            telemetry.addData(String.format(" target zone: "), targetZone);
-                        }
-                    }
-                    telemetry.update();
-                }
-            }
-        }
         return targetZone;
     }
 
-    protected void activateCamera() {
-        if (tfod != null) {
-                tfod.activate();
-                tfod.setZoom(1, 17.0 / 5.0);
-        }
-    }
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-
-    protected void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName =hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-    }
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.5f;
-        tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 300;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-
-        // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
-        // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
-        // tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
-    }
 
 
 
@@ -233,23 +254,26 @@ public class AutoLeftMid extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
-                .forward(25)
+                .forward(35)
                 .build();
+
         robot.slides.rightSlide.setPower(.5);
         robot.slides.leftSlide.setPower(-.5);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
         //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         Pose2d startPose2 = goToJunctionFromStart.end();
         odoDriveTrain.setPoseEstimate(startPose2);
+        back(10);
+
         odoDriveTrain.turn(Math.toRadians(-43));
         forward(10.5);
     }
-/*
-    protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
-    protected void spinCarousel() {telemetry.addData("spinCarousel from parent", "parent");};
-    protected void park() {{telemetry.addData("park from parent", "parent");};};
+    /*
+        protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
+        protected void spinCarousel() {telemetry.addData("spinCarousel from parent", "parent");};
+        protected void park() {{telemetry.addData("park from parent", "parent");};};
 
-   */
+       */
     protected void dropCone()   {
         robot.claw.setPosition(0);
         robot.slides.rightSlide.setPower(-.5);
@@ -322,9 +346,7 @@ public class AutoLeftMid extends LinearOpMode {
         }
         else if (targetZone == 2) {
             back(9);
-
             odoDriveTrain.turn(Math.toRadians(-137));
-            forward(7);
         }
         else if (targetZone == 3) {
             back(9);
@@ -352,7 +374,7 @@ public class AutoLeftMid extends LinearOpMode {
                 .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
-       // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         Pose2d startPose2 = forward.end();
         odoDriveTrain.setPoseEstimate(startPose2);
     }
@@ -365,5 +387,14 @@ public class AutoLeftMid extends LinearOpMode {
         odoDriveTrain.followTrajectory(linetospline);
     }
 
-
+    void tagToTelemetry(AprilTagDetection detection)
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
 }
