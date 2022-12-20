@@ -34,6 +34,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.CV.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -59,7 +60,7 @@ import java.util.ArrayList;
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    int TARGET_LEVEL_DEFAULT = 1;
+    int TARGET_LEVEL_DEFAULT = 1;  // TODO KL: change the name to reflect the zone
     int targetZone = TARGET_LEVEL_DEFAULT;
 
     SampleMecanumDrive odoDriveTrain;
@@ -78,7 +79,7 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-
+    final int extended = 1;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
@@ -120,11 +121,18 @@ abstract public class AutoParent extends LinearOpMode {
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
-        {
-            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
-            if(currentDetections.size() != 0)
+        while (!isStarted() && !isStopRequested()) {
+
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+            // TODO KL:  ======================= start replace with the method - solved
+            targetZone = determineTargetZone(currentDetections, telemetry);  //telemetry.addData("Target Zone", targetZone);
+            telemetry.addData(">", "Press Play to start op mode");
+             telemetry.update();
+
+            // TODO KL: this and the following code should have already been detected before, this is not doing anything - solved
+        }
+           /* if(currentDetections.size() != 0)
             {
                 boolean tagFound = false;
 
@@ -138,21 +146,21 @@ abstract public class AutoParent extends LinearOpMode {
                     }
                 }
 
-                if(tagFound)
+                if(tagFound)  // TODO: this if/else block can be handled in the above for loop - solved
                 {
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                     tagToTelemetry(tagOfInterest);
                     if (tagOfInterest.id == Left){
                         telemetry.addLine("Target Zone: Left");
-                        targetZone = 1;
+                        targetZone = 1;  // TODO KL: use a constant instead of just a number - solved
                     }
                     else if (tagOfInterest.id == Middle){
                         telemetry.addLine("Target Zone: Middle");
-                        targetZone = 2;
+                        targetZone = 2; // TODO KL: use a constant instead of just a number - solved
                     }
                     else if (tagOfInterest.id == Right){
                         telemetry.addLine("Target Zone: Right");
-                        targetZone = 3;
+                        targetZone = 3; // TODO KL: use a constant instead of just a number - solved
                     }
                 }
                 else
@@ -171,7 +179,7 @@ abstract public class AutoParent extends LinearOpMode {
                 }
 
             }
-            else
+            else // TODO KL: is this code necessary?   the code is the same as the above - solved
             {
                 telemetry.addLine("Don't see tag of interest :(");
 
@@ -190,14 +198,14 @@ abstract public class AutoParent extends LinearOpMode {
             telemetry.update();
             sleep(20);
         }
-
+*/
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
          */
 
         /* Update the telemetry */
-        if(tagOfInterest != null)
+       /* if(tagOfInterest != null)
         {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
@@ -208,31 +216,73 @@ abstract public class AutoParent extends LinearOpMode {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
         }
-
-
+*/
+//TODO KL: ========================= stop replace the method
         // Wait for the game to begin
 
-        robot.claw.setPosition(1);
-        targetZone = determineLevel();
-        telemetry.addData("Target Zone", targetZone);
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
+        robot.claw.setPosition(extended);  // TODO KL: what is position(1)? ue a good named costant-solved
+
 
 
         waitForStart();
-        telemetry.addData("Target Zone", targetZone);
-        telemetry.update();
+        //telemetry.addData("Target Zone", targetZone);
+        //telemetry.addData(">", "Press Play to start op mode");
+       // telemetry.update();
+        //telemetry.addData("Target Zone", targetZone);
+        //telemetry.update();
 
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
         telemetry.update();
     }
 
-    protected int determineLevel() {
+    protected int determineTargetZone( ArrayList<AprilTagDetection> currentDetections, Telemetry telemetry){
+        boolean tagFound = false;
+        int targetZone = -1;
+        for(AprilTagDetection tag : currentDetections)
+        {
+            tagOfInterest = tag;
+            //telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+            // tagToTelemetry(tagOfInterest);
+            if(tagOfInterest.id == Left)
+            {
+                tagFound = true;
+                telemetry.addLine("Target Zone: Left");
+                targetZone = 1;  // TODO KL: use a constant instead of just a number
+                break;
+            }else if (tagOfInterest.id == Middle)
+            {
+                tagFound = true;
+                telemetry.addLine("Target Zone: Middle");
+                targetZone = 2; // TODO KL: use a constant instead of just a number
+                break;
+            } else if (tagOfInterest.id == Right){
+                tagFound = true;
+                telemetry.addLine("Target Zone: Right");
+                targetZone = 3; // TODO KL: use a constant instead of just a number
+                break;
+            } else{
+                telemetry.addLine("Don't see tag of interest :(");
+
+                /* if(tagOfInterest == null)
+                {
+                    telemetry.addLine("(The tag has never been seen)");
+                }
+                else
+                {
+                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    // tagToTelemetry(tagOfInterest);
+                }
+
+                 */
+            }
+            telemetry.update();
+        }
         return targetZone;
     }
-
-
+    /*protected int determineLevel() {
+        return targetZone;
+    }*/
 
 
 
@@ -264,12 +314,7 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);
     }
-    /*
-        protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
-        protected void spinCarousel() {telemetry.addData("spinCarousel from parent", "parent");};
-        protected void park() {{telemetry.addData("park from parent", "parent");};};
 
-       */
     protected void dropCone()   {
         robot.claw.setPosition(0);
         robot.slides.rightSlide.setPower(-.5);
@@ -362,7 +407,7 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.followTrajectory(linetospline);
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
+    /* void tagToTelemetry(AprilTagDetection detection)
     {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
@@ -372,6 +417,8 @@ abstract public class AutoParent extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+
+     */
     public abstract double adjustTurn(double angle);
     protected abstract void park();
 

@@ -54,8 +54,8 @@ import java.util.List;
  * is explained below.
  */
 //@Disabled
-@Autonomous(name = "AutoLeftMidGoal", group = "ConceptBlue")
-public class AutoLeftMid extends LinearOpMode {
+@Autonomous(name = "AutoLeftTallGoal", group = "ConceptBlue")
+public class NoAutoLeftTall extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
@@ -66,7 +66,6 @@ public class AutoLeftMid extends LinearOpMode {
     double SlidePowerInit = .6;
     int TARGET_LEVEL_DEFAULT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
-
     SampleMecanumDrive odoDriveTrain;
     TechiesHardwareWithoutDriveTrain robot ;
     /*double currentVelocity;
@@ -233,16 +232,15 @@ public class AutoLeftMid extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
-                .forward(25)
+                .forward(51)
                 .build();
-        robot.slides.rightSlide.setPower(.5);
-        robot.slides.leftSlide.setPower(-.5);
+        robot.slides.rightSlide.setPower(.55);
+        robot.slides.leftSlide.setPower(-.55);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
-        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        Pose2d startPose2 = goToJunctionFromStart.end();
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
-        odoDriveTrain.turn(Math.toRadians(-43));
-        forward(10.5);
+        odoDriveTrain.turn(Math.toRadians(-47));
+        forward(9);
     }
 /*
     protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
@@ -252,8 +250,8 @@ public class AutoLeftMid extends LinearOpMode {
    */
     protected void dropCone()   {
         robot.claw.setPosition(0);
-        robot.slides.rightSlide.setPower(-.5);
-        robot.slides.leftSlide.setPower(.5);
+        robot.slides.rightSlide.setPower(-.6);
+        robot.slides.leftSlide.setPower(.6);
         sleep(850);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
@@ -264,48 +262,28 @@ public class AutoLeftMid extends LinearOpMode {
         back(9);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(45));
-        forward(24);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        odoDriveTrain.turn(Math.toRadians(88));
-        forward(25);
-        Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose3);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
-        sleep(550);
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(1);
-        sleep(650);
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
-        sleep(500);
-        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(137));
         forward(25);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
+        robot.slides.rightSlide.setPower(-.8);
+        robot.slides.leftSlide.setPower(.8);
         sleep(550);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         robot.claw.setPosition(1);
         sleep(650);
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
+        robot.slides.rightSlide.setPower(.6);
+        robot.slides.leftSlide.setPower(-.6);
         sleep(500);
-        */
+
 
     }
     protected void goToJunction()   {
         back(25);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(141));
+        odoDriveTrain.turn(Math.toRadians(-137));
         forward(9);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
@@ -315,7 +293,7 @@ public class AutoLeftMid extends LinearOpMode {
 
         if (targetZone == 1) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(-137));
+            odoDriveTrain.turn(Math.toRadians(137));
             forward(25);
             Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
             odoDriveTrain.setPoseEstimate(startPose2);
@@ -323,12 +301,12 @@ public class AutoLeftMid extends LinearOpMode {
         else if (targetZone == 2) {
             back(9);
 
-            odoDriveTrain.turn(Math.toRadians(-137));
-            forward(7);
+            odoDriveTrain.turn(Math.toRadians(47));
+            back(7);
         }
         else if (targetZone == 3) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(-137));
+            odoDriveTrain.turn(Math.toRadians(137));
             back(24);
 
         }
@@ -345,15 +323,14 @@ public class AutoLeftMid extends LinearOpMode {
         odoDriveTrain.setPoseEstimate(startPose2);
 
     }
-    protected void forward (double inches){
+    protected void forward (int inches){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory forward = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
                 .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
-       // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        Pose2d startPose2 = forward.end();
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
     protected void lineToSpline(int x, int y, int degrees){
