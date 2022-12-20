@@ -45,16 +45,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-/**
- * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the Freight Frenzy game elements.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
- */
 //@Disabled
 @Autonomous(name = "AutoParent", group = "ConceptBlue")
 abstract public class AutoParent extends LinearOpMode {
@@ -107,185 +97,55 @@ abstract public class AutoParent extends LinearOpMode {
             {
                 camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
-
             @Override
             public void onError(int errorCode)
             {
-
             }
         });
 
         telemetry.setMsTransmissionInterval(50);
-
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-
         while (!isStarted() && !isStopRequested()) {
-
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-            // TODO KL:  ======================= start replace with the method - solved
             targetZone = determineTargetZone(currentDetections, telemetry);  //telemetry.addData("Target Zone", targetZone);
             telemetry.addData(">", "Press Play to start op mode");
              telemetry.update();
-
-            // TODO KL: this and the following code should have already been detected before, this is not doing anything - solved
         }
-           /* if(currentDetections.size() != 0)
-            {
-                boolean tagFound = false;
-
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    if(tag.id == Left || tag.id == Middle || tag.id == Right)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                }
-
-                if(tagFound)  // TODO: this if/else block can be handled in the above for loop - solved
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                    if (tagOfInterest.id == Left){
-                        telemetry.addLine("Target Zone: Left");
-                        targetZone = 1;  // TODO KL: use a constant instead of just a number - solved
-                    }
-                    else if (tagOfInterest.id == Middle){
-                        telemetry.addLine("Target Zone: Middle");
-                        targetZone = 2; // TODO KL: use a constant instead of just a number - solved
-                    }
-                    else if (tagOfInterest.id == Right){
-                        telemetry.addLine("Target Zone: Right");
-                        targetZone = 3; // TODO KL: use a constant instead of just a number - solved
-                    }
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
-            }
-            else // TODO KL: is this code necessary?   the code is the same as the above - solved
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-
-            }
-
-            telemetry.update();
-            sleep(20);
-        }
-*/
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
-        /* Update the telemetry */
-       /* if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-*/
-//TODO KL: ========================= stop replace the method
-        // Wait for the game to begin
-
         robot.claw.setPosition(extended);  // TODO KL: what is position(1)? ue a good named costant-solved
-
-
-
         waitForStart();
-        //telemetry.addData("Target Zone", targetZone);
-        //telemetry.addData(">", "Press Play to start op mode");
-       // telemetry.update();
-        //telemetry.addData("Target Zone", targetZone);
-        //telemetry.update();
-
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
         telemetry.update();
     }
-
     protected int determineTargetZone( ArrayList<AprilTagDetection> currentDetections, Telemetry telemetry){
-        boolean tagFound = false;
         int targetZone = -1;
         for(AprilTagDetection tag : currentDetections)
         {
             tagOfInterest = tag;
-            //telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-            // tagToTelemetry(tagOfInterest);
             if(tagOfInterest.id == Left)
             {
-                tagFound = true;
                 telemetry.addLine("Target Zone: Left");
                 targetZone = 1;  // TODO KL: use a constant instead of just a number
                 break;
             }else if (tagOfInterest.id == Middle)
             {
-                tagFound = true;
                 telemetry.addLine("Target Zone: Middle");
                 targetZone = 2; // TODO KL: use a constant instead of just a number
                 break;
             } else if (tagOfInterest.id == Right){
-                tagFound = true;
                 telemetry.addLine("Target Zone: Right");
                 targetZone = 3; // TODO KL: use a constant instead of just a number
                 break;
             } else{
                 telemetry.addLine("Don't see tag of interest :(");
-
-                /* if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    // tagToTelemetry(tagOfInterest);
-                }
-
-                 */
             }
             telemetry.update();
         }
         return targetZone;
     }
-    /*protected int determineLevel() {
-        return targetZone;
-    }*/
-
-
-
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
         dropCone();
@@ -294,14 +154,12 @@ abstract public class AutoParent extends LinearOpMode {
         dropCone();
         park();
     }
-
     protected void goToJunctionFromStart(){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(35)
                 .build();
-
         robot.slides.rightSlide.setPower(.5);
         robot.slides.leftSlide.setPower(-.5);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
@@ -309,12 +167,10 @@ abstract public class AutoParent extends LinearOpMode {
         Pose2d startPose2 = goToJunctionFromStart.end();
         odoDriveTrain.setPoseEstimate(startPose2);
         back(10);
-
        // odoDriveTrain.turn(Math.toRadians(-43));
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);
     }
-
     protected void dropCone()   {
         robot.claw.setPosition(0);
         robot.slides.rightSlide.setPower(-.5);
@@ -347,23 +203,6 @@ abstract public class AutoParent extends LinearOpMode {
         robot.slides.rightSlide.setPower(.4);
         robot.slides.leftSlide.setPower(-.4);
         sleep(500);
-        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(137));
-        forward(25);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
-        sleep(550);
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(1);
-        sleep(650);
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
-        sleep(500);
-        */
 
     }
     protected void goToJunction()   {
@@ -406,19 +245,6 @@ abstract public class AutoParent extends LinearOpMode {
                 .build();
         odoDriveTrain.followTrajectory(linetospline);
     }
-
-    /* void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-    }
-
-     */
     public abstract double adjustTurn(double angle);
     protected abstract void park();
 
