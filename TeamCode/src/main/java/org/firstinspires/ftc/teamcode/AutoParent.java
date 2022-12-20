@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.CV.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -50,10 +50,10 @@ import java.util.ArrayList;
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    final int TARGET_LEVEL_DEFAULT = 1;  // TODO KL: change the name to reflect the zone
-    final int TARGET_LEVEL_LEFT = 1;
-    final int TARGET_LEVEL_MIDDLE = 2;
-    final int TARGET_LEVEL_RIGHT = 3;
+    static final int TARGET_LEVEL_DEFAULT = 1;
+    static final int TARGET_LEVEL_LEFT = 1;
+    static final int TARGET_LEVEL_MIDDLE = 2;
+    static final int TARGET_LEVEL_RIGHT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
 
     SampleMecanumDrive odoDriveTrain;
@@ -72,17 +72,19 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    final int OPENED = 1;
-    final int CLOSED = 0;
+    final int OPENED_CLAW = 1;
+    static final int CLOSED_CLAW = 0;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
     //Tag Id for sleeve
-    int Left = 5; // Tag ID 18 from the 36h11 family
-    int Middle = 6;
-    int Right = 7;
-    AprilTagDetection tagOfInterest = null;
+    static final int LEFT = 5; // Tag ID 18 from the 36h11 family
+    static final int MIDDLE = 6;
+    static final int RIGHT = 7;
 
+
+    public abstract double adjustTurn(double angle);
+    protected abstract void park();
 
     @Override
     public void runOpMode() {
@@ -114,32 +116,34 @@ abstract public class AutoParent extends LinearOpMode {
          */
         while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-            targetZone = determineTargetZone(currentDetections, telemetry);  //telemetry.addData("Target Zone", targetZone);
+            targetZone = determineTargetZone(currentDetections, telemetry);
             telemetry.addData(">", "Press Play to start op mode");
              telemetry.update();
         }
-        robot.claw.setPosition(OPENED);
+        robot.claw.setPosition(OPENED_CLAW);
         waitForStart();
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
         telemetry.update();
     }
+
     protected int determineTargetZone( ArrayList<AprilTagDetection> currentDetections, Telemetry telemetry){
         int targetZone = TARGET_LEVEL_DEFAULT;
+        AprilTagDetection tagOfInterest = null;
         for(AprilTagDetection tag : currentDetections)
         {
             tagOfInterest = tag;
-            if(tagOfInterest.id == Left)
+            if(tagOfInterest.id == LEFT)
             {
                 telemetry.addLine("Target Zone: Left");
                 targetZone = TARGET_LEVEL_LEFT;// TODO KL: use a constant instead of just a number
                 break;
-            }else if (tagOfInterest.id == Middle)
+            }else if (tagOfInterest.id == MIDDLE)
             {
                 telemetry.addLine("Target Zone: Middle");
                 targetZone = TARGET_LEVEL_MIDDLE;// TODO KL: use a constant instead of just a number
                 break;
-            } else if (tagOfInterest.id == Right){
+            } else if (tagOfInterest.id == RIGHT){
                 telemetry.addLine("Target Zone: Right");
                 targetZone = TARGET_LEVEL_RIGHT; // TODO KL: use a constant instead of just a number
                 break;
@@ -249,7 +253,6 @@ abstract public class AutoParent extends LinearOpMode {
                 .build();
         odoDriveTrain.followTrajectory(linetospline);
     }
-    public abstract double adjustTurn(double angle);
-    protected abstract void park();
+
 
 }
