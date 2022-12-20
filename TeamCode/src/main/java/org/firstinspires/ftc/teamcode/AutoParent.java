@@ -50,7 +50,10 @@ import java.util.ArrayList;
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    int TARGET_LEVEL_DEFAULT = 1;  // TODO KL: change the name to reflect the zone
+    final int TARGET_LEVEL_DEFAULT = 1;  // TODO KL: change the name to reflect the zone
+    final int TARGET_LEVEL_LEFT = 1;
+    final int TARGET_LEVEL_MIDDLE = 2;
+    final int TARGET_LEVEL_RIGHT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
 
     SampleMecanumDrive odoDriveTrain;
@@ -69,7 +72,8 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    final int extended = 1;
+    final int OPENED = 1;
+    final int CLOSED = 0;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
@@ -114,30 +118,30 @@ abstract public class AutoParent extends LinearOpMode {
             telemetry.addData(">", "Press Play to start op mode");
              telemetry.update();
         }
-        robot.claw.setPosition(extended);  // TODO KL: what is position(1)? ue a good named costant-solved
+        robot.claw.setPosition(OPENED);
         waitForStart();
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
         telemetry.update();
     }
     protected int determineTargetZone( ArrayList<AprilTagDetection> currentDetections, Telemetry telemetry){
-        int targetZone = -1;
+        int targetZone = TARGET_LEVEL_DEFAULT;
         for(AprilTagDetection tag : currentDetections)
         {
             tagOfInterest = tag;
             if(tagOfInterest.id == Left)
             {
                 telemetry.addLine("Target Zone: Left");
-                targetZone = 1;  // TODO KL: use a constant instead of just a number
+                targetZone = TARGET_LEVEL_LEFT;// TODO KL: use a constant instead of just a number
                 break;
             }else if (tagOfInterest.id == Middle)
             {
                 telemetry.addLine("Target Zone: Middle");
-                targetZone = 2; // TODO KL: use a constant instead of just a number
+                targetZone = TARGET_LEVEL_MIDDLE;// TODO KL: use a constant instead of just a number
                 break;
             } else if (tagOfInterest.id == Right){
                 telemetry.addLine("Target Zone: Right");
-                targetZone = 3; // TODO KL: use a constant instead of just a number
+                targetZone = TARGET_LEVEL_RIGHT; // TODO KL: use a constant instead of just a number
                 break;
             } else{
                 telemetry.addLine("Don't see tag of interest :(");

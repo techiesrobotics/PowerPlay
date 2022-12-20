@@ -20,7 +20,7 @@ public class OnePlayerOpMode extends TechiesOpMode {
         return drivelr;
     }
 
-    public void moveSlide() {
+    public void moveSlideFree() {
         if (gamepad1.right_bumper)  {
             robotCore.slides.rightSlide.setPower(-.75);
             robotCore.slides.leftSlide.setPower(.75);
@@ -41,7 +41,10 @@ public class OnePlayerOpMode extends TechiesOpMode {
             robotCore.slides.rightSlide.setPower(0);
             robotCore.slides.leftSlide.setPower(0);
         }
+
     }
+
+
 
 
 }
