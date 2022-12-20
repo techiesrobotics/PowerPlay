@@ -55,7 +55,7 @@ import java.util.List;
  */
 //@Disabled
 @Autonomous(name = "AutoLeftTallGoal", group = "ConceptBlue")
-public class AutoLeft extends LinearOpMode {
+public class AutoLeftTall extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
