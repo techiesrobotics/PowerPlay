@@ -79,45 +79,10 @@ public class TechiesHardwareWithoutDriveTrain
 
         // Save reference to Hardware map
         hwMap = aHWMap;
-            // Define and Initialize Motors
         slides = new TechiesSlideHardware(hwMap);
-
-        //leftDrive  = hwMap.get(DcMotor.class, "frontleft");
-        //rightDrive = hwMap.get(DcMotor.class, "frontright");
-        //leftBack  = hwMap.get(DcMotor.class, "backleft");
-        //rightBack    = hwMap.get(DcMotor.class, "backright");
         claw = hwMap.get(Servo.class, "claw");
+        claw.setPosition(.5);  // TODO KL: is this correct?
 
-        claw.setPosition(.5);
-
-
-
-        //leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        //rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        //leftBack.setDirection(DcMotor.Direction.REVERSE);
-        //rightBack.setDirection(DcMotor.Direction.FORWARD);
-        //leftSlide.setDirection(DcMotor.Direction.REVERSE);
-        //rightSlide.setDirection(DcMotor.Direction.REVERSE);
-
-
-            // Set all motors to zero power
-
-        //leftDrive.setPower(0.0);
-        //rightDrive.setPower(0.0);
-        //leftBack.setPower(0.0);
-        //rightBack.setPower(0.0);
-        //leftSlide.setPower(0.0);
-        //rightSlide.setPower(0.0);
-
-
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        //leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
     public void init(HardwareMap hardwareMap) {

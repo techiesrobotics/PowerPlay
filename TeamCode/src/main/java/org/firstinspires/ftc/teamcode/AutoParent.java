@@ -72,7 +72,7 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    final int OPENED_CLAW = 1;
+    static final int OPENED_CLAW = 1;
     static final int CLOSED_CLAW = 0;
     // UNITS ARE METERS
     double tagsize = 0.166;
@@ -180,7 +180,7 @@ abstract public class AutoParent extends LinearOpMode {
         forward(10.5);
     }
     protected void dropCone()   {
-        robot.claw.setPosition(0);
+        robot.claw.setPosition(CLOSED_CLAW);  // TODO KL: is this correct? Open or close? 1 or 0
         robot.slides.rightSlide.setPower(-.5);
         robot.slides.leftSlide.setPower(.5);
         sleep(850);
@@ -206,7 +206,7 @@ abstract public class AutoParent extends LinearOpMode {
         sleep(550);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(1);
+        robot.claw.setPosition(OPENED_CLAW);  // TODO KL: is this correct? Open or close? 1 or 0
         sleep(650);
         robot.slides.rightSlide.setPower(.4);
         robot.slides.leftSlide.setPower(-.4);

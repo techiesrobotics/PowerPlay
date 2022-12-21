@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.DriverControlOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -59,10 +60,11 @@ public abstract class TechiesOpMode extends LinearOpMode {
     TechiesHardware robot   = new TechiesHardware();
     private ElapsedTime runtime = new ElapsedTime();
     TechiesHardwareWithoutDriveTrain robotCore;
-    double currentVelocity;
-    double maxVelocity = 0.0;
-    double currentPos;
-    double repetitions = 0.0;
+    public static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    public static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
+    public static final double     WHEEL_DIAMETER_INCHES   = 2.0 ;     // For figuring circumference
+    public static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     abstract public double getTurn() ;
     abstract public double getDrivefb();
@@ -169,4 +171,49 @@ public abstract class TechiesOpMode extends LinearOpMode {
     }
 
      */
+    public void encoderSlide(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = robotCore.slides.leftSlide.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightTarget = robotCore.slides.rightSlide.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            robotCore.slides.leftSlide.setTargetPosition(newLeftTarget);
+            robotCore.slides.rightSlide.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            robotCore.slides.leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robotCore.slides.rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robotCore.slides.leftSlide.setPower(Math.abs(speed));
+            robotCore.slides.rightSlide.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robotCore.slides.leftSlide.isBusy() && robotCore.slides.rightSlide.isBusy())) {
+
+            }
+
+            // Stop all motion;
+            robotCore.slides.leftSlide.setPower(0);
+            robotCore.slides.rightSlide.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robotCore.slides.leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robotCore.slides.rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
 }
