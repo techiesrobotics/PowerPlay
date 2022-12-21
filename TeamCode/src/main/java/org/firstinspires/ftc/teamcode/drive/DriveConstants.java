@@ -64,9 +64,9 @@ public class DriveConstants {
      * empirically tuned.
      */
 
-    public static double kV = 1;
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = 0.0105;
+    public static double kA = 0.0025;
+    public static double kStatic = 0.11617;
 
     //for big robot
     //public static double kV = 0.037;
