@@ -103,10 +103,10 @@ public abstract class TechiesOpMode extends LinearOpMode {
             double drivefb  = getDrivefb();  //-gamepad1.left_stick_y;
             double drivelr = getDrivelr(); //gamepad1.left_stick_x;
 
-            leftPower    = Range.clip(drivefb + turn + drivelr, -1.0, 1.0) ;
-            rightPower   = Range.clip(drivefb - turn - drivelr, -1.0, 1.0) ;
-            backleftPower   = Range.clip(drivefb + turn - drivelr, -1.0, 1.0) ;
-            backrightPower   = Range.clip(drivefb - turn + drivelr, -1.0, 1.0) ;
+            leftPower    = Range.clip(drivefb + turn + drivelr, -.65, .65) ;
+            rightPower   = Range.clip(drivefb - turn - drivelr, -.65, .65) ;
+            backleftPower   = Range.clip(drivefb + turn - drivelr, -.65, .65) ;
+            backrightPower   = Range.clip(drivefb - turn + drivelr, -.65, .65) ;
 
 
             // Send calculated power to wheels
@@ -128,7 +128,7 @@ public abstract class TechiesOpMode extends LinearOpMode {
 
             if (gamepad1.a) {
                 if (robotCore.claw.getPosition() > 0.5) {
-                    robotCore.claw.setPosition(0);
+                    robotCore.claw.setPosition(.4);
                     sleep(200);
                 }
                 else if (robotCore.claw.getPosition() <= 0.5) {

@@ -50,7 +50,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.88976; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 13.5; // in
+    public static double TRACK_WIDTH = 13.93; // in
 
     //for big robot
     //public static double WHEEL_RADIUS = 1.88976; // in
@@ -103,7 +103,8 @@ public class DriveConstants {
      */
 
     public static double MAX_VEL = 73.17330064499293;
-    public static double MAX_ACCEL = 73.17330064499293;
+    public static double MAX_ACCEL = 53.17330064499293;
+    //if something breaks change MAX_ACCEL to 73.17330064499293
     public static double MAX_ANG_VEL = Math.toRadians(310.55713333333335);
     public static double MAX_ANG_ACCEL = Math.toRadians(310.55713333333335);
 

@@ -21,8 +21,8 @@ public class OnePlayerOpMode extends TechiesOpMode {
     }
 
     public void moveSlideFree() {
-        if (gamepad1.right_bumper)  {
-            robotCore.slides.rightSlide.setPower(-.75);
+        if (gamepad1.left_bumper)  {
+            robotCore.slides.rightSlide.setPower(.75);
             robotCore.slides.leftSlide.setPower(-.75);
         }
 
@@ -32,14 +32,14 @@ public class OnePlayerOpMode extends TechiesOpMode {
         }
 
         //down
-        if (gamepad1.left_bumper)  {
-            robotCore.slides.rightSlide.setPower(1);
+        if (gamepad1.right_bumper)  {
+            robotCore.slides.rightSlide.setPower(-1);
             robotCore.slides.leftSlide.setPower(1);
         }
 
         else {
             robotCore.slides.rightSlide.setPower(0.001);
-            robotCore.slides.leftSlide.setPower(00.001);
+            robotCore.slides.leftSlide.setPower(0.001);
         }
         //if (gamepad1.b)  {
           //  encoderSlide(1,10,10,5);
