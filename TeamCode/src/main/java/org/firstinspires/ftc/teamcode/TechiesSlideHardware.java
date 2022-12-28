@@ -74,8 +74,8 @@ public class TechiesSlideHardware
         leftSlide  = hwMap.get(DcMotor.class, "leftslide");
         rightSlide    = hwMap.get(DcMotor.class, "rightslide");
 
-        leftSlide.setDirection(DcMotor.Direction.FORWARD);
-        rightSlide.setDirection(DcMotor.Direction.REVERSE);
+        leftSlide.setDirection(DcMotor.Direction.REVERSE);
+        rightSlide.setDirection(DcMotor.Direction.FORWARD);
 
         leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

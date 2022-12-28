@@ -81,7 +81,7 @@ public class TechiesHardwareWithoutDriveTrain
         hwMap = aHWMap;
         slides = new TechiesSlideHardware(hwMap);
         claw = hwMap.get(Servo.class, "claw");
-        claw.setPosition(.5);  // TODO KL: is this correct?
+        claw.setPosition(1);  // TODO KL: is this correct?
 
         }
 

@@ -10,7 +10,7 @@ public class AutoLeftChild extends AutoParent{
     protected void park() {
         if (targetZone == 3) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
+            odoDriveTrain.turn(Math.toRadians(adjustTurn(137)));
             back(25);
 
         } else if (targetZone == 2) {
@@ -18,9 +18,10 @@ public class AutoLeftChild extends AutoParent{
             odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
         } else if (targetZone == 1) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-137)));
-            forward(24);
+            odoDriveTrain.turn(Math.toRadians(adjustTurn(137)));
+            forward(26);
 
         }
     }
+
 }

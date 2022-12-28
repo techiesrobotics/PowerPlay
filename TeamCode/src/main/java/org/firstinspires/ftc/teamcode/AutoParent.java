@@ -50,7 +50,7 @@ import java.util.ArrayList;
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    static final int TARGET_LEVEL_DEFAULT = 1;
+    static final int TARGET_LEVEL_DEFAULT = 3;
     static final int TARGET_LEVEL_LEFT = 1;
     static final int TARGET_LEVEL_MIDDLE = 2;
     static final int TARGET_LEVEL_RIGHT = 3;
@@ -163,7 +163,8 @@ abstract public class AutoParent extends LinearOpMode {
         park();
     }
     protected void goToJunctionFromStart(){
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        //for medium goal
+        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(35)
@@ -171,16 +172,22 @@ abstract public class AutoParent extends LinearOpMode {
         robot.slides.rightSlide.setPower(.5);
         robot.slides.leftSlide.setPower(-.5);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
-        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         Pose2d startPose2 = goToJunctionFromStart.end();
         odoDriveTrain.setPoseEstimate(startPose2);
         back(10);
-       // odoDriveTrain.turn(Math.toRadians(-43));
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
-        forward(10.5);
+        forward(10.5);*/
+
+        robot.slides.rightSlide.setPower(.65);
+        robot.slides.leftSlide.setPower(-.65);
+        forward(52);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+        odoDriveTrain.turn(Math.toRadians(-47));
+        forward(12);
     }
     protected void dropCone()   {
-        robot.claw.setPosition(CLOSED_CLAW);  // TODO KL: is this correct? Open or close? 1 or 0
+        robot.claw.setPosition(CLOSED_CLAW);
         robot.slides.rightSlide.setPower(-.5);
         robot.slides.leftSlide.setPower(.5);
         sleep(850);
@@ -190,6 +197,8 @@ abstract public class AutoParent extends LinearOpMode {
         telemetry.update();
     }
     protected void pickupCone(){
+        //for medium goal
+        /*
         back(9);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
@@ -211,14 +220,41 @@ abstract public class AutoParent extends LinearOpMode {
         robot.slides.rightSlide.setPower(.4);
         robot.slides.leftSlide.setPower(-.4);
         sleep(500);
+*/
+        back(12);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        odoDriveTrain.turn(Math.toRadians(140));
+        forward(27);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+        robot.slides.rightSlide.setPower(-.95);
+        robot.slides.leftSlide.setPower(.95);
+        sleep(550);
+        robot.slides.rightSlide.setPower(0);
+        robot.slides.leftSlide.setPower(0);
+        robot.claw.setPosition(OPENED_CLAW);
+        sleep(650);
+        robot.slides.rightSlide.setPower(.65);
+        robot.slides.leftSlide.setPower(-.65);
+        sleep(500);
 
     }
     protected void goToJunction()   {
+        /* for medium goal
         back(25);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(adjustTurn(141)));
         forward(9);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+*/
+        back(27);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        odoDriveTrain.turn(Math.toRadians(-140));
+        forward(12);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
