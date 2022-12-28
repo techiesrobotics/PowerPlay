@@ -157,7 +157,10 @@ abstract public class AutoParent extends LinearOpMode {
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
         dropCone();
-        pickupCone();
+        pickupCone(650);
+        goToJunction();
+        dropCone();
+        pickupCone(725);
         goToJunction();
         dropCone();
         park();
@@ -190,13 +193,13 @@ abstract public class AutoParent extends LinearOpMode {
         robot.claw.setPosition(CLOSED_CLAW);
         robot.slides.rightSlide.setPower(-.5);
         robot.slides.leftSlide.setPower(.5);
-        sleep(850);
+        sleep(800);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         telemetry.addData("dropPreloadFreight", "dropPreloadFreight");
         telemetry.update();
     }
-    protected void pickupCone(){
+    protected void pickupCone(int time){
         //for medium goal
         /*
         back(9);
@@ -230,7 +233,7 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.setPoseEstimate(startPose2);
         robot.slides.rightSlide.setPower(-.95);
         robot.slides.leftSlide.setPower(.95);
-        sleep(550);
+        sleep(time);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         robot.claw.setPosition(OPENED_CLAW);
