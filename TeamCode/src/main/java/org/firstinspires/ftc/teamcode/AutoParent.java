@@ -50,7 +50,7 @@ import java.util.ArrayList;
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    static final int TARGET_LEVEL_DEFAULT = 3;
+    static final int TARGET_LEVEL_DEFAULT = 2;
     static final int TARGET_LEVEL_LEFT = 1;
     static final int TARGET_LEVEL_MIDDLE = 2;
     static final int TARGET_LEVEL_RIGHT = 3;
@@ -157,10 +157,10 @@ abstract public class AutoParent extends LinearOpMode {
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
         dropCone();
-        pickupCone(650);
+        pickupCone(0); //650
         goToJunction();
         dropCone();
-        pickupCone(725);
+        pickupCone(25);
         goToJunction();
         dropCone();
         park();
@@ -186,14 +186,14 @@ abstract public class AutoParent extends LinearOpMode {
         forward(52);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
-        odoDriveTrain.turn(Math.toRadians(-47));
-        forward(12);
+        odoDriveTrain.turn(Math.toRadians(-52));
+        forward(11);
     }
     protected void dropCone()   {
         robot.claw.setPosition(CLOSED_CLAW);
-        robot.slides.rightSlide.setPower(-.5);
-        robot.slides.leftSlide.setPower(.5);
-        sleep(800);
+        robot.slides.rightSlide.setPower(-1);
+        robot.slides.leftSlide.setPower(1);
+        sleep(300);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         telemetry.addData("dropPreloadFreight", "dropPreloadFreight");
@@ -227,20 +227,18 @@ abstract public class AutoParent extends LinearOpMode {
         back(12);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(140));
-        forward(27);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        robot.slides.rightSlide.setPower(-.95);
-        robot.slides.leftSlide.setPower(.95);
+        odoDriveTrain.turn(Math.toRadians(144));
+        robot.slides.rightSlide.setPower(-.4);
+        robot.slides.leftSlide.setPower(.4);
         sleep(time);
+        forward(27.5);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         robot.claw.setPosition(OPENED_CLAW);
-        sleep(650);
+        sleep(800);
         robot.slides.rightSlide.setPower(.65);
         robot.slides.leftSlide.setPower(-.65);
-        sleep(500);
+        sleep(300);
 
     }
     protected void goToJunction()   {
@@ -256,7 +254,7 @@ abstract public class AutoParent extends LinearOpMode {
         back(27);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(-140));
+        odoDriveTrain.turn(Math.toRadians(-144));
         forward(12);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
