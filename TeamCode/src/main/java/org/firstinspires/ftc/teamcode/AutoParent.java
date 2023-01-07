@@ -47,8 +47,7 @@ import java.util.ArrayList;
 
 //@Disabled
 @Autonomous(name = "AutoParent", group = "ConceptBlue")
-abstract public class AutoParent extends LinearOpMode {
-
+abstract public class AutoParent extends LinearOpMode  {
     double SlidePowerInit = .6;
     static final int TARGET_LEVEL_DEFAULT = 3;
     static final int TARGET_LEVEL_LEFT = 1;
