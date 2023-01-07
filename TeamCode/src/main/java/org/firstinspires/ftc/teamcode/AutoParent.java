@@ -34,8 +34,9 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.CV.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -44,22 +45,15 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-/**
- * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the Freight Frenzy game elements.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
- * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained below.
- */
 //@Disabled
 @Autonomous(name = "AutoParent", group = "ConceptBlue")
 abstract public class AutoParent extends LinearOpMode {
 
     double SlidePowerInit = .6;
-    int TARGET_LEVEL_DEFAULT = 1;
+    static final int TARGET_LEVEL_DEFAULT = 3;
+    static final int TARGET_LEVEL_LEFT = 1;
+    static final int TARGET_LEVEL_MIDDLE = 2;
+    static final int TARGET_LEVEL_RIGHT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
 
     SampleMecanumDrive odoDriveTrain;
@@ -78,16 +72,19 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-
+    static final int OPENED_CLAW = 1;
+    static final int CLOSED_CLAW = 0;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
     //Tag Id for sleeve
-    int Left = 5; // Tag ID 18 from the 36h11 family
-    int Middle = 6;
-    int Right = 7;
-    AprilTagDetection tagOfInterest = null;
+    static final int LEFT = 5; // Tag ID 18 from the 36h11 family
+    static final int MIDDLE = 6;
+    static final int RIGHT = 7;
 
+
+    public abstract double adjustTurn(double angle);
+    protected abstract void park();
 
     @Override
     public void runOpMode() {
@@ -106,181 +103,105 @@ abstract public class AutoParent extends LinearOpMode {
             {
                 camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
-
             @Override
             public void onError(int errorCode)
             {
-
             }
         });
 
         telemetry.setMsTransmissionInterval(50);
-
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
-        {
+        while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
-            if(currentDetections.size() != 0)
-            {
-                boolean tagFound = false;
-
-                for(AprilTagDetection tag : currentDetections)
-                {
-                    if(tag.id == Left || tag.id == Middle || tag.id == Right)
-                    {
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                }
-
-                if(tagFound)
-                {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                    if (tagOfInterest.id == Left){
-                        telemetry.addLine("Target Zone: Left");
-                        targetZone = 1;
-                    }
-                    else if (tagOfInterest.id == Middle){
-                        telemetry.addLine("Target Zone: Middle");
-                        targetZone = 2;
-                    }
-                    else if (tagOfInterest.id == Right){
-                        telemetry.addLine("Target Zone: Right");
-                        targetZone = 3;
-                    }
-                }
-                else
-                {
-                    telemetry.addLine("Don't see tag of interest :(");
-
-                    if(tagOfInterest == null)
-                    {
-                        telemetry.addLine("(The tag has never been seen)");
-                    }
-                    else
-                    {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-
-            }
-            else
-            {
-                telemetry.addLine("Don't see tag of interest :(");
-
-                if(tagOfInterest == null)
-                {
-                    telemetry.addLine("(The tag has never been seen)");
-                }
-                else
-                {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
-                }
-
-            }
-
-            telemetry.update();
-            sleep(20);
+            targetZone = determineTargetZone(currentDetections, telemetry);
+            telemetry.addData(">", "Press Play to start op mode");
+             telemetry.update();
         }
-
-        /*
-         * The START command just came in: now work off the latest snapshot acquired
-         * during the init loop.
-         */
-
-        /* Update the telemetry */
-        if(tagOfInterest != null)
-        {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
-        }
-        else
-        {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
-        }
-
-
-        // Wait for the game to begin
-
-        robot.claw.setPosition(1);
-        targetZone = determineLevel();
-        telemetry.addData("Target Zone", targetZone);
-        telemetry.addData(">", "Press Play to start op mode");
-        telemetry.update();
-
-
+        robot.claw.setPosition(OPENED_CLAW);
         waitForStart();
-        telemetry.addData("Target Zone", targetZone);
-        telemetry.update();
-
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
         telemetry.update();
     }
 
-    protected int determineLevel() {
+    protected int determineTargetZone( ArrayList<AprilTagDetection> currentDetections, Telemetry telemetry){
+        int targetZone = TARGET_LEVEL_DEFAULT;
+        AprilTagDetection tagOfInterest = null;
+        for(AprilTagDetection tag : currentDetections)
+        {
+            tagOfInterest = tag;
+            if(tagOfInterest.id == LEFT)
+            {
+                telemetry.addLine("Target Zone: Left");
+                targetZone = TARGET_LEVEL_LEFT;// TODO KL: use a constant instead of just a number
+                break;
+            }else if (tagOfInterest.id == MIDDLE)
+            {
+                telemetry.addLine("Target Zone: Middle");
+                targetZone = TARGET_LEVEL_MIDDLE;// TODO KL: use a constant instead of just a number
+                break;
+            } else if (tagOfInterest.id == RIGHT){
+                telemetry.addLine("Target Zone: Right");
+                targetZone = TARGET_LEVEL_RIGHT; // TODO KL: use a constant instead of just a number
+                break;
+            } else{
+                telemetry.addLine("Don't see tag of interest :(");
+            }
+            telemetry.update();
+        }
         return targetZone;
     }
-
-
-
-
-
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
         dropCone();
-        pickupCone();
+        pickupCone(650);
+        goToJunction();
+        dropCone();
+        pickupCone(725);
         goToJunction();
         dropCone();
         park();
     }
-
     protected void goToJunctionFromStart(){
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        //for medium goal
+        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory goToJunctionFromStart = odoDriveTrain.trajectoryBuilder(startPose)
                 .forward(35)
                 .build();
-
         robot.slides.rightSlide.setPower(.5);
         robot.slides.leftSlide.setPower(-.5);
         odoDriveTrain.followTrajectory(goToJunctionFromStart);
-        //Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         Pose2d startPose2 = goToJunctionFromStart.end();
         odoDriveTrain.setPoseEstimate(startPose2);
         back(10);
-
-       // odoDriveTrain.turn(Math.toRadians(-43));
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
-        forward(10.5);
-    }
-    /*
-        protected void goToCarousel() {telemetry.addData("goto carousel from parent", "parent");};
-        protected void spinCarousel() {telemetry.addData("spinCarousel from parent", "parent");};
-        protected void park() {{telemetry.addData("park from parent", "parent");};};
+        forward(10.5);*/
 
-       */
+        robot.slides.rightSlide.setPower(.65);
+        robot.slides.leftSlide.setPower(-.65);
+        forward(52);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+        odoDriveTrain.turn(Math.toRadians(-47));
+        forward(12);
+    }
     protected void dropCone()   {
-        robot.claw.setPosition(0);
+        robot.claw.setPosition(CLOSED_CLAW);
         robot.slides.rightSlide.setPower(-.5);
         robot.slides.leftSlide.setPower(.5);
-        sleep(850);
+        sleep(800);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         telemetry.addData("dropPreloadFreight", "dropPreloadFreight");
         telemetry.update();
     }
-    protected void pickupCone(){
+    protected void pickupCone(int time){
+        //for medium goal
+        /*
         back(9);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
@@ -297,36 +218,46 @@ abstract public class AutoParent extends LinearOpMode {
         sleep(550);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(1);
+        robot.claw.setPosition(OPENED_CLAW);  // TODO KL: is this correct? Open or close? 1 or 0
         sleep(650);
         robot.slides.rightSlide.setPower(.4);
         robot.slides.leftSlide.setPower(-.4);
         sleep(500);
-        /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+*/
+        back(12);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(137));
-        forward(25);
+        odoDriveTrain.turn(Math.toRadians(140));
+        forward(27);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
-        sleep(550);
+        robot.slides.rightSlide.setPower(-.95);
+        robot.slides.leftSlide.setPower(.95);
+        sleep(time);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(1);
+        robot.claw.setPosition(OPENED_CLAW);
         sleep(650);
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
+        robot.slides.rightSlide.setPower(.65);
+        robot.slides.leftSlide.setPower(-.65);
         sleep(500);
-        */
 
     }
     protected void goToJunction()   {
+        /* for medium goal
         back(25);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(adjustTurn(141)));
         forward(9);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
+*/
+        back(27);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        odoDriveTrain.turn(Math.toRadians(-140));
+        forward(12);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
@@ -362,17 +293,5 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.followTrajectory(linetospline);
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
-    {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-    }
-    public abstract double adjustTurn(double angle);
-    protected abstract void park();
 
 }

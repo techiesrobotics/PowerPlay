@@ -55,6 +55,7 @@ public class TechiesSlideHardware
 {
     /* Public OpMode members. hi*/
 
+
     public DcMotor  leftSlide    = null;
     public DcMotor  rightSlide   = null;
 
@@ -74,29 +75,16 @@ public class TechiesSlideHardware
         rightSlide    = hwMap.get(DcMotor.class, "rightslide");
 
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
-        rightSlide.setDirection(DcMotor.Direction.REVERSE);
+        rightSlide.setDirection(DcMotor.Direction.FORWARD);
+
         leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-       // setUpMotor(leftSlide);
-        //setUpMotor(rightSlide);
+        //leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-
+        //leftSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
-    /* Initialize standard Hardware interfaces */
-
-    /*private void setUpMotor(DcMotorEx aMotor) {
-        aMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        aMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        aMotor.setVelocityPIDFCoefficients(1.40,.120, 0,10.996); //Change these
-        aMotor.setPositionPIDFCoefficients(5.0);
-        aMotor.setTargetPositionTolerance(100); //Maybe change this
-        aMotor.setDirection(DcMotorEx.Direction.FORWARD);
-            //change
-    }
-
-     */
 
     public void setRiserPower(double leftRiserPower, double rightRiserPower){
         leftSlide.setPower(leftRiserPower);
@@ -116,6 +104,5 @@ public class TechiesSlideHardware
         leftSlide.setPower(0);
         rightSlide.setPower(0);
     }
-
 
 }

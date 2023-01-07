@@ -53,9 +53,9 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "AutoRight", group = "ConceptRed")
 //@Disabled
-public class AutoRight extends LinearOpMode {
+@Autonomous(name = "AutoLeftTallGoal", group = "ConceptBlue")
+public class NoAutoLeftTall extends LinearOpMode {
 
     protected static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     private static final String[] LABELS = {
@@ -63,6 +63,7 @@ public class AutoRight extends LinearOpMode {
             "2 Bulb",
             "3 Panel"
     };
+    double SlidePowerInit = .6;
     int TARGET_LEVEL_DEFAULT = 3;
     int targetZone = TARGET_LEVEL_DEFAULT;
     SampleMecanumDrive odoDriveTrain;
@@ -259,8 +260,12 @@ public class AutoRight extends LinearOpMode {
     }
     protected void pickupCone(){
         back(9);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(137));
         forward(25);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
         robot.slides.rightSlide.setPower(-.8);
         robot.slides.leftSlide.setPower(.8);
         sleep(550);
@@ -276,8 +281,12 @@ public class AutoRight extends LinearOpMode {
     }
     protected void goToJunction()   {
         back(25);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(-137));
         forward(9);
+        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose2);
     }
 
     protected void park() {
@@ -286,9 +295,12 @@ public class AutoRight extends LinearOpMode {
             back(9);
             odoDriveTrain.turn(Math.toRadians(137));
             forward(25);
+            Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
+            odoDriveTrain.setPoseEstimate(startPose2);
         }
         else if (targetZone == 2) {
             back(9);
+
             odoDriveTrain.turn(Math.toRadians(47));
             back(7);
         }
@@ -309,6 +321,7 @@ public class AutoRight extends LinearOpMode {
         odoDriveTrain.followTrajectory(back);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
+
     }
     protected void forward (int inches){
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -327,8 +340,6 @@ public class AutoRight extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x, y, Math.toRadians(degrees)))
                 .build();
         odoDriveTrain.followTrajectory(linetospline);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
     }
 
 

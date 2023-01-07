@@ -24,7 +24,7 @@ public class TwoPlayerOpMode extends TechiesOpMode {
         return drivelr;
     }
 
-    public void moveSlide() {
+    public void moveSlideFree() {
         double slide = gamepad1.left_stick_y;
         robotCore.slides.rightSlide.setPower(-Range.clip(slide, -1.0, 1.0));
         robotCore.slides.leftSlide.setPower(Range.clip(slide, -1.0, 1.0));
