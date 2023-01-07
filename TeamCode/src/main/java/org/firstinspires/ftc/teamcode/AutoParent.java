@@ -72,8 +72,8 @@ abstract public class AutoParent extends LinearOpMode {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    static final int OPENED_CLAW = 1;
-    static final int CLOSED_CLAW = 0;
+    static final double CLOSED_CLAW = .4;
+    static final double OPENED_CLAW = 1;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
@@ -157,7 +157,7 @@ abstract public class AutoParent extends LinearOpMode {
     protected void doMissions(int targetZone) {
         goToJunctionFromStart();
         dropCone();
-        pickupCone(0); //650
+        pickupCone1();
         goToJunction();
         dropCone();
         pickupCone(25);
@@ -181,13 +181,13 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);*/
 
-        robot.slides.rightSlide.setPower(.65);
-        robot.slides.leftSlide.setPower(-.65);
-        forward(52);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        odoDriveTrain.turn(Math.toRadians(-52));
-        forward(11);
+        robot.slides.rightSlide.setPower(.7);
+        robot.slides.leftSlide.setPower(-.7);
+        //forward(52);
+        //odoDriveTrain.turn(Math.toRadians(90));
+        //odoDriveTrain.turn(Math.toRadians(-49));
+        strafeleft(77);
+        forward(7);
     }
     protected void dropCone()   {
         robot.claw.setPosition(CLOSED_CLAW);
@@ -198,6 +198,29 @@ abstract public class AutoParent extends LinearOpMode {
         robot.slides.leftSlide.setPower(0);
         telemetry.addData("dropPreloadFreight", "dropPreloadFreight");
         telemetry.update();
+    }
+    protected void pickupCone1(){
+
+        back(6);
+        //straferight(19);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(0, -19, Math.toRadians(179)))
+                .build();
+        odoDriveTrain.followTrajectory(turnstrafe);
+        //odoDriveTrain.turn(Math.toRadians(179));
+        robot.slides.rightSlide.setPower(-.4125);
+        robot.slides.leftSlide.setPower(.4125);
+        forward(20);
+        robot.slides.rightSlide.setPower(0);
+        robot.slides.leftSlide.setPower(0);
+        robot.claw.setPosition(OPENED_CLAW);
+        sleep(800);
+        robot.slides.rightSlide.setPower(.65);
+        robot.slides.leftSlide.setPower(-.65);
+        sleep(300);
+
     }
     protected void pickupCone(int time){
         //for medium goal
@@ -224,12 +247,12 @@ abstract public class AutoParent extends LinearOpMode {
         robot.slides.leftSlide.setPower(-.4);
         sleep(500);
 */
-        back(12);
+        back(11);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(144));
-        robot.slides.rightSlide.setPower(-.4);
-        robot.slides.leftSlide.setPower(.4);
+        robot.slides.rightSlide.setPower(-.425);
+        robot.slides.leftSlide.setPower(.425);
         sleep(time);
         forward(27.5);
         robot.slides.rightSlide.setPower(0);
@@ -254,8 +277,8 @@ abstract public class AutoParent extends LinearOpMode {
         back(27);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(-144));
-        forward(12);
+        odoDriveTrain.turn(Math.toRadians(-143));
+        forward(14);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
@@ -290,6 +313,24 @@ abstract public class AutoParent extends LinearOpMode {
                 .build();
         odoDriveTrain.followTrajectory(linetospline);
     }
-
-
+    protected void straferight (double inches) {
+        Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        Trajectory straferight = odoDriveTrain.trajectoryBuilder(new Pose2d(0, 0, 0))
+                .strafeRight(inches)
+                .build();
+        odoDriveTrain.followTrajectory(straferight);
+        Pose2d startPose2 = straferight.end();
+        odoDriveTrain.setPoseEstimate(startPose2);
+    }
+    protected void strafeleft (double inches){
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        Trajectory strafeleft = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
+                .strafeLeft(inches)
+                .build();
+        odoDriveTrain.followTrajectory(strafeleft);
+        Pose2d startPose2 = strafeleft.end();
+        odoDriveTrain.setPoseEstimate(startPose2);
+    }
 }
