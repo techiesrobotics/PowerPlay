@@ -181,13 +181,13 @@ abstract public class AutoParent extends LinearOpMode {
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);*/
 
-        robot.slides.rightSlide.setPower(.7);
-        robot.slides.leftSlide.setPower(-.7);
+        robot.slides.rightSlide.setPower(.72);
+        robot.slides.leftSlide.setPower(-.72);
         //forward(52);
         //odoDriveTrain.turn(Math.toRadians(90));
         //odoDriveTrain.turn(Math.toRadians(-49));
         strafeleft(77);
-        forward(7);
+        forward(8);
     }
     protected void dropCone()   {
         robot.claw.setPosition(CLOSED_CLAW);
@@ -206,13 +206,14 @@ abstract public class AutoParent extends LinearOpMode {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, -19, Math.toRadians(179)))
+                .lineToLinearHeading(new Pose2d(0, -14, Math.toRadians(-179)))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
-        //odoDriveTrain.turn(Math.toRadians(179));
+
+        odoDriveTrain.turn(Math.toRadians(-10));
         robot.slides.rightSlide.setPower(-.4125);
         robot.slides.leftSlide.setPower(.4125);
-        forward(20);
+        forward(10);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         robot.claw.setPosition(OPENED_CLAW);
@@ -250,7 +251,7 @@ abstract public class AutoParent extends LinearOpMode {
         back(11);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(144));
+        odoDriveTrain.turn(Math.toRadians(149));
         robot.slides.rightSlide.setPower(-.425);
         robot.slides.leftSlide.setPower(.425);
         sleep(time);
@@ -277,7 +278,7 @@ abstract public class AutoParent extends LinearOpMode {
         back(27);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(-143));
+        odoDriveTrain.turn(Math.toRadians(-149));
         forward(14);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
