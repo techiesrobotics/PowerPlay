@@ -7,6 +7,9 @@ public class AutoLeftChild extends AutoParent{
     public double adjustTurn(double angle){
        return angle;
     }
+    public double adjustTrajectorydistance(double distance){
+        return distance;
+    }
     protected void park() {
         if (targetZone == 3) {
             back(9);
