@@ -15,15 +15,15 @@ public class AutoRightChild extends AutoParent{
     protected void park() {
         if (targetZone == 3) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-47)));
+            odoDriveTrain.turn(Math.toRadians(adjustTurn(-227)));
             forward(25);
 
         } else if (targetZone == 2) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-47)));
+            odoDriveTrain.turn(Math.toRadians(adjustTurn(-227)));
         } else if (targetZone == 1) {
             back(9);
-            odoDriveTrain.turn(Math.toRadians(adjustTurn(-47)));
+            odoDriveTrain.turn(Math.toRadians(adjustTurn(-227)));
             back(24);
 
         }

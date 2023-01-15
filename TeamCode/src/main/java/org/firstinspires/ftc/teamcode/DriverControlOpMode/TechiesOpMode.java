@@ -127,11 +127,11 @@ public abstract class TechiesOpMode extends LinearOpMode {
             moveSlideFree();
 
             if (gamepad1.a) {
-                if (robotCore.claw.getPosition() > 0.5) {
-                    robotCore.claw.setPosition(.4);
+                if (robotCore.claw.getPosition() > 0.7) {
+                    robotCore.claw.setPosition(.6);
                     sleep(200);
                 }
-                else if (robotCore.claw.getPosition() <= 0.5) {
+                else if (robotCore.claw.getPosition() <= 0.7) {
                     robotCore.claw.setPosition(1);
                     sleep(200);
                 }
