@@ -159,11 +159,11 @@ abstract public class AutoParent extends LinearOpMode  {
         goToJunctionFromStart();
         dropCone();
         pickupCone1();
-        goToJunction(11);
+        goToJunction(12,-141);
         dropCone();
-        pickupCone(15);
-        goToJunction(10);
-        dropCone();
+        //pickupCone(15);
+        //goToJunction(10,-151);
+        //dropCone();
         park();
     }
     protected void goToJunctionFromStart(){
@@ -190,7 +190,7 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(73), Math.toRadians(adjustTurn(15))))
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(72), Math.toRadians(adjustTurn(15))))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
         //strafeleft(78.2);
@@ -210,15 +210,15 @@ abstract public class AutoParent extends LinearOpMode  {
 
         //back(3);
         //straferight(10);
-        robot.slides.rightSlide.setPower(-.3);
-        robot.slides.leftSlide.setPower(.3);
+        robot.slides.rightSlide.setPower(-.29);
+        robot.slides.leftSlide.setPower(.29);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory backright = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(-11, adjustTrajectorydistance(-15), Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-13, adjustTrajectorydistance(-13), Math.toRadians(0)))
                 .build();
         odoDriveTrain.followTrajectory(backright);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(170)));
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(167)));
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         forward(28);
@@ -230,12 +230,12 @@ abstract public class AutoParent extends LinearOpMode  {
 
     }
     protected void pickupCone(int time){
-        back(9);
+        back(12);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(140)));
-        robot.slides.rightSlide.setPower(-.40);
-        robot.slides.leftSlide.setPower(.40);
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(145)));
+        robot.slides.rightSlide.setPower(-.39);
+        robot.slides.leftSlide.setPower(.39);
         sleep(time);
         forward(32);
         robot.slides.rightSlide.setPower(0);
@@ -247,7 +247,7 @@ abstract public class AutoParent extends LinearOpMode  {
         sleep(300);
 
     }
-    protected void goToJunction(int forward)   {
+    protected void goToJunction(int forward,int turn)   {
         /* for medium goal
         back(25);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -260,7 +260,7 @@ abstract public class AutoParent extends LinearOpMode  {
         back(27);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(-141)));
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(turn)));
         forward(forward);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
