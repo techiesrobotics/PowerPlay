@@ -49,7 +49,7 @@ import java.util.ArrayList;
 @Autonomous(name = "AutoParent", group = "ConceptBlue")
 abstract public class AutoParent extends LinearOpMode  {
     double SlidePowerInit = .6;
-    static final int TARGET_LEVEL_DEFAULT = 2;
+    static final int TARGET_LEVEL_DEFAULT = 1;
     static final int TARGET_LEVEL_LEFT = 1;
     static final int TARGET_LEVEL_MIDDLE = 2;
     static final int TARGET_LEVEL_RIGHT = 3;
@@ -71,18 +71,20 @@ abstract public class AutoParent extends LinearOpMode  {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    static final double CLOSED_CLAW = .4;
-    static final double OPENED_CLAW = 1;
+    static final double OPEN_CLAW = .5;
+    static final double CLOSED_CLAW = 1;
     // UNITS ARE METERS
     double tagsize = 0.166;
 
     //Tag Id for sleeve
     static final int LEFT = 5; // Tag ID 18 from the 36h11 family
     static final int MIDDLE = 6;
-    static final int RIGHT = 7;
+    static final int RIGHT = 9;
 
 
     public abstract double adjustTurn(double angle);
+    public abstract double adjustTrajectorydistance(double distance);
+
     protected abstract void park();
 
     @Override
@@ -119,7 +121,7 @@ abstract public class AutoParent extends LinearOpMode  {
             telemetry.addData(">", "Press Play to start op mode");
              telemetry.update();
         }
-        robot.claw.setPosition(OPENED_CLAW);
+        robot.claw.setPosition(CLOSED_CLAW);
         waitForStart();
         doMissions(targetZone);
         telemetry.addData("do missions", "finish mission");
@@ -157,10 +159,10 @@ abstract public class AutoParent extends LinearOpMode  {
         goToJunctionFromStart();
         dropCone();
         pickupCone1();
-        goToJunction();
+        goToJunction(11);
         dropCone();
-        pickupCone(25);
-        goToJunction();
+        pickupCone(15);
+        goToJunction(10);
         dropCone();
         park();
     }
@@ -180,16 +182,22 @@ abstract public class AutoParent extends LinearOpMode  {
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);*/
 
-        robot.slides.rightSlide.setPower(.72);
-        robot.slides.leftSlide.setPower(-.72);
+        robot.slides.rightSlide.setPower(.7);
+        robot.slides.leftSlide.setPower(-.7);
         //forward(52);
         //odoDriveTrain.turn(Math.toRadians(90));
         //odoDriveTrain.turn(Math.toRadians(-49));
-        strafeleft(77);
-        forward(8);
+        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
+        odoDriveTrain.setPoseEstimate(startPose);
+        Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(73), Math.toRadians(adjustTurn(15))))
+                .build();
+        odoDriveTrain.followTrajectory(turnstrafe);
+        //strafeleft(78.2);
+        forward(6);
     }
     protected void dropCone()   {
-        robot.claw.setPosition(CLOSED_CLAW);
+        robot.claw.setPosition(OPEN_CLAW);
         robot.slides.rightSlide.setPower(-1);
         robot.slides.leftSlide.setPower(1);
         sleep(300);
@@ -200,22 +208,21 @@ abstract public class AutoParent extends LinearOpMode  {
     }
     protected void pickupCone1(){
 
-        back(6);
-        //straferight(19);
+        //back(3);
+        //straferight(10);
+        robot.slides.rightSlide.setPower(-.3);
+        robot.slides.leftSlide.setPower(.3);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, -14, Math.toRadians(-179)))
+        Trajectory backright = odoDriveTrain.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(-11, adjustTrajectorydistance(-15), Math.toRadians(0)))
                 .build();
-        odoDriveTrain.followTrajectory(turnstrafe);
-
-        odoDriveTrain.turn(Math.toRadians(-10));
-        robot.slides.rightSlide.setPower(-.4125);
-        robot.slides.leftSlide.setPower(.4125);
-        forward(10);
+        odoDriveTrain.followTrajectory(backright);
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(170)));
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(OPENED_CLAW);
+        forward(28);
+        robot.claw.setPosition(CLOSED_CLAW);
         sleep(800);
         robot.slides.rightSlide.setPower(.65);
         robot.slides.leftSlide.setPower(-.65);
@@ -223,48 +230,24 @@ abstract public class AutoParent extends LinearOpMode  {
 
     }
     protected void pickupCone(int time){
-        //for medium goal
-        /*
         back(9);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(45)));
-        forward(24);
-        Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose2);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(88)));
-        forward(25);
-        Pose2d startPose3 = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose3);
-        robot.slides.rightSlide.setPower(-.6);
-        robot.slides.leftSlide.setPower(.6);
-        sleep(550);
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(OPENED_CLAW);  // TODO KL: is this correct? Open or close? 1 or 0
-        sleep(650);
-        robot.slides.rightSlide.setPower(.4);
-        robot.slides.leftSlide.setPower(-.4);
-        sleep(500);
-*/
-        back(11);
-        Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
-        odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(149));
-        robot.slides.rightSlide.setPower(-.425);
-        robot.slides.leftSlide.setPower(.425);
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(140)));
+        robot.slides.rightSlide.setPower(-.40);
+        robot.slides.leftSlide.setPower(.40);
         sleep(time);
-        forward(27.5);
+        forward(32);
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
-        robot.claw.setPosition(OPENED_CLAW);
+        robot.claw.setPosition(CLOSED_CLAW);
         sleep(800);
         robot.slides.rightSlide.setPower(.65);
         robot.slides.leftSlide.setPower(-.65);
         sleep(300);
 
     }
-    protected void goToJunction()   {
+    protected void goToJunction(int forward)   {
         /* for medium goal
         back(25);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -277,8 +260,8 @@ abstract public class AutoParent extends LinearOpMode  {
         back(27);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
-        odoDriveTrain.turn(Math.toRadians(-149));
-        forward(14);
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(-141)));
+        forward(forward);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose2);
     }
