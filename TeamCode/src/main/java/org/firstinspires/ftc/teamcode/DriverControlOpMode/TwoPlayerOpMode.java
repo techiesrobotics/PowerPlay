@@ -30,6 +30,20 @@ public class TwoPlayerOpMode extends TechiesOpMode {
         robotCore.slides.leftSlide.setPower(Range.clip(slide, -.7, .7));
 
     }
+    public void moveSlideWithButton(){
+        // low
+        if(gamepad1.x){
+            encoderSlide(1, 19, 19, 3);
+        }
+        // middle
+        else if (gamepad1.y){
+            encoderSlide(1, 29,29,3);
+        }
+        // high
+        else if (gamepad1.b){
+            encoderSlide(1, 39,39,3);
+        }
+    }
 
 }
 

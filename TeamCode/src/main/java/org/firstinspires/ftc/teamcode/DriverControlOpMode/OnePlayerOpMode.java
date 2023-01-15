@@ -27,7 +27,7 @@ public class OnePlayerOpMode extends TechiesOpMode {
         }
 
         else {
-            robotCore.slides.rightSlide.setPower(0.001);
+            robotCore.slides.rightSlide.setPower(-0.001);
             robotCore.slides.leftSlide.setPower(0.001);
         }
 
@@ -38,7 +38,7 @@ public class OnePlayerOpMode extends TechiesOpMode {
         }
 
         else {
-            robotCore.slides.rightSlide.setPower(0.001);
+            robotCore.slides.rightSlide.setPower(-0.001);
             robotCore.slides.leftSlide.setPower(0.001);
         }
         //if (gamepad1.b)  {
@@ -48,6 +48,25 @@ public class OnePlayerOpMode extends TechiesOpMode {
     }
 
 
+    public void moveSlideWithButton() {
+        // low
+        if(gamepad1.x){
+            encoderSlide(1, 19, 19, 3);
+        }
+        // middle
+        else if (gamepad1.y){
+            encoderSlide(1, 29,29,3);
 
+        }
+        // high
+        else if (gamepad1.b){
+            encoderSlide(1, 39,39,3);
+        }
+    }
+    public void driveSpeed(){
+        if (gamepad1.left_bumper){
+           return;
+        }
+    }
 
 }

@@ -70,6 +70,8 @@ public abstract class TechiesOpMode extends LinearOpMode {
     abstract public double getDrivefb();
     abstract public double getDrivelr();
     abstract public void moveSlideFree();
+    abstract public void moveSlideWithButton();
+
     @Override
     public void runOpMode() {
 
@@ -124,8 +126,9 @@ public abstract class TechiesOpMode extends LinearOpMode {
 
             //slides
             //up
-            moveSlideFree();
 
+            moveSlideFree();
+            moveSlideWithButton();
             if (gamepad1.a) {
                 if (robotCore.claw.getPosition() > 0.7) {
                     robotCore.claw.setPosition(.6);
@@ -139,7 +142,6 @@ public abstract class TechiesOpMode extends LinearOpMode {
 
         }
     }
-
 
 
 
