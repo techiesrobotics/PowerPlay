@@ -33,6 +33,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -161,9 +162,9 @@ abstract public class AutoParent extends LinearOpMode  {
         pickupCone1();
         goToJunction(12,-141);
         dropCone();
-        //pickupCone(15);
-        //goToJunction(10,-151);
-        //dropCone();
+        pickupCone(15);
+        goToJunction(10,-151);
+        dropCone();
         park();
     }
     protected void goToJunctionFromStart(){
@@ -190,11 +191,11 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(72), Math.toRadians(adjustTurn(15))))
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74), Math.toRadians(adjustTurn(15))))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
         //strafeleft(78.2);
-        forward(6);
+        forward(3.5);
     }
     protected void dropCone()   {
         robot.claw.setPosition(OPEN_CLAW);
@@ -218,7 +219,7 @@ abstract public class AutoParent extends LinearOpMode  {
                 .lineToLinearHeading(new Pose2d(-13, adjustTrajectorydistance(-13), Math.toRadians(0)))
                 .build();
         odoDriveTrain.followTrajectory(backright);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(167)));
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(200)));
         robot.slides.rightSlide.setPower(0);
         robot.slides.leftSlide.setPower(0);
         forward(28);

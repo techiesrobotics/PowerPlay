@@ -7,8 +7,7 @@ import org.firstinspires.ftc.teamcode.DriverControlOpMode.TechiesOpMode;
 
 @TeleOp(name="2 Player: DriverControlOpMode", group="Linear Opmode")
 public class TwoPlayerOpMode extends TechiesOpMode {
-    public double getTurn()
-    {
+    public double getTurn() {
         double turn = gamepad2.right_stick_x;
         return turn;
     }
@@ -30,18 +29,19 @@ public class TwoPlayerOpMode extends TechiesOpMode {
         robotCore.slides.leftSlide.setPower(Range.clip(slide, -.7, .7));
 
     }
-    public void moveSlideWithButton(){
+
+    public void moveSlideWithButton() {
         // low
-        if(gamepad1.x){
-            encoderSlide(1, 19, 19, 3);
+        if (gamepad1.x) {
+            encoderSlide(1, -19, -19, 3);
         }
         // middle
-        else if (gamepad1.y){
-            encoderSlide(1, 29,29,3);
+        else if (gamepad1.y) {
+            encoderSlide(1, -29, -29, 3);
         }
         // high
-        else if (gamepad1.b){
-            encoderSlide(1, 39,39,3);
+        else if (gamepad1.b) {
+            encoderSlide(1, -39, 39, 3);
         }
     }
 

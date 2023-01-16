@@ -71,6 +71,7 @@ public abstract class TechiesOpMode extends LinearOpMode {
     abstract public double getDrivelr();
     abstract public void moveSlideFree();
     abstract public void moveSlideWithButton();
+  //  abstract public double driveSpeed();
 
     @Override
     public void runOpMode() {
@@ -94,7 +95,7 @@ public abstract class TechiesOpMode extends LinearOpMode {
             double rightPower;
             double backleftPower;
             double backrightPower;
-
+            double Multiplier = 1;
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -105,18 +106,18 @@ public abstract class TechiesOpMode extends LinearOpMode {
             double drivefb  = getDrivefb();  //-gamepad1.left_stick_y;
             double drivelr = getDrivelr(); //gamepad1.left_stick_x;
 
-            leftPower    = Range.clip(drivefb + turn + drivelr, -.65, .65) ;
-            rightPower   = Range.clip(drivefb - turn - drivelr, -.65, .65) ;
-            backleftPower   = Range.clip(drivefb + turn - drivelr, -.65, .65) ;
-            backrightPower   = Range.clip(drivefb - turn + drivelr, -.65, .65) ;
+            leftPower    = Range.clip(drivefb + turn + drivelr, -.55, .55) ;
+            rightPower   = Range.clip(drivefb - turn - drivelr, -.55, .55) ;
+            backleftPower   = Range.clip(drivefb + turn - drivelr, -.55, .55) ;
+            backrightPower   = Range.clip(drivefb - turn + drivelr, -.55, .55) ;
 
 
             // Send calculated power to wheels
-            robot.leftDrive.setPower(leftPower);
-            robot.rightDrive.setPower(rightPower);
-            robot.leftBack.setPower(backleftPower);
-            robot.rightBack.setPower(backrightPower);
-
+          //  Multiplier = driveSpeed();
+            robot.leftDrive.setPower(leftPower*Multiplier);
+            robot.rightDrive.setPower(rightPower*Multiplier);
+            robot.leftBack.setPower(backleftPower*Multiplier);
+            robot.rightBack.setPower(backrightPower*Multiplier);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);

@@ -21,28 +21,24 @@ public class OnePlayerOpMode extends TechiesOpMode {
     }
 
     public void moveSlideFree() {
-        if (gamepad1.left_bumper)  {
+        if (gamepad1.left_bumper) {
             robotCore.slides.rightSlide.setPower(-.75);
             robotCore.slides.leftSlide.setPower(.75);
-        }
-
-        else {
+        } else {
             robotCore.slides.rightSlide.setPower(-0.001);
             robotCore.slides.leftSlide.setPower(0.001);
         }
 
         //up
-        if (gamepad1.right_bumper)  {
+        if (gamepad1.right_bumper) {
             robotCore.slides.rightSlide.setPower(1);
             robotCore.slides.leftSlide.setPower(-1);
-        }
-
-        else {
+        } else {
             robotCore.slides.rightSlide.setPower(-0.001);
             robotCore.slides.leftSlide.setPower(0.001);
         }
         //if (gamepad1.b)  {
-          //  encoderSlide(1,10,10,5);
+        //  encoderSlide(1,10,10,5);
         //}
 
     }
@@ -50,23 +46,26 @@ public class OnePlayerOpMode extends TechiesOpMode {
 
     public void moveSlideWithButton() {
         // low
-        if(gamepad1.x){
-            encoderSlide(1, 19, 19, 3);
+        if (gamepad1.x) {
+            encoderSlide(1, -19, 19, 3);
         }
         // middle
-        else if (gamepad1.y){
-            encoderSlide(1, 29,29,3);
+        else if (gamepad1.y) {
+            encoderSlide(1, -29, 29, 3);
 
         }
         // high
-        else if (gamepad1.b){
-            encoderSlide(1, 39,39,3);
-        }
-    }
-    public void driveSpeed(){
-        if (gamepad1.left_bumper){
-           return;
+        else if (gamepad1.b) {
+            encoderSlide(1, -39, 39, 3);
         }
     }
 
+   /* public double driveSpeed() {
+        double Multiplier = 1;
+        if (gamepad1.left_bumper) {
+            Multiplier = 0.5;
+
+        }
+        return  Multiplier;
+    }*/
 }
