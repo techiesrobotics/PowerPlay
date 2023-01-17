@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -58,7 +59,8 @@ public class TechiesSlideHardware
 
     public DcMotor  leftSlide    = null;
     public DcMotor  rightSlide   = null;
-
+    public VoltageSensor rightSlideVoltage = null;
+    public VoltageSensor leftSlideVoltage = null;
 
     /* local OpMode members. */
     HardwareMap hwMap     =  null;
@@ -73,7 +75,8 @@ public class TechiesSlideHardware
 
         leftSlide  = hwMap.get(DcMotor.class, "leftslide");
         rightSlide    = hwMap.get(DcMotor.class, "rightslide");
-
+        leftSlideVoltage = hwMap.voltageSensor.get("leftslide");
+        rightSlideVoltage = hwMap.voltageSensor.get("rightslide");
         leftSlide.setDirection(DcMotor.Direction.REVERSE);
         rightSlide.setDirection(DcMotor.Direction.FORWARD);
 

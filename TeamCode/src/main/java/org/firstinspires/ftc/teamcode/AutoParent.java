@@ -33,6 +33,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -58,12 +59,13 @@ abstract public class AutoParent extends LinearOpMode  {
 
     SampleMecanumDrive odoDriveTrain;
     TechiesHardwareWithoutDriveTrain robot ;
-
+    TechiesHardware robotWithDriveTrain;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
 
+    //VoltageSensor voltageSensor = hardwareMap.get();
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -82,7 +84,7 @@ abstract public class AutoParent extends LinearOpMode  {
     static final int MIDDLE = 6;
     static final int RIGHT = 9;
 
-
+    double leftDriveVoltage, rightDriveVoltage, leftBackVoltage, rightBackVoltage, finalLeftSlideVoltage, finalRightSlideVoltage, finalDriveVoltageMean;
     public abstract double adjustTurn(double angle);
     public abstract double adjustTrajectorydistance(double distance);
 
@@ -92,7 +94,15 @@ abstract public class AutoParent extends LinearOpMode  {
     public void runOpMode() {
         robot = new TechiesHardwareWithoutDriveTrain(hardwareMap);
         odoDriveTrain = new SampleMecanumDrive(hardwareMap);
-
+        odoDriveTrain.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robotWithDriveTrain = new TechiesHardware();
+        double leftDriveVoltage = robotWithDriveTrain.leftDriveVoltage.getVoltage();
+        double rightDriveVoltage = robotWithDriveTrain.rightDriveVoltage.getVoltage();
+        double leftBackVoltage = robotWithDriveTrain.leftBackVoltage.getVoltage();
+        double rightBackVoltage = robotWithDriveTrain.rightBackVoltage.getVoltage();
+        double finalLeftSlideVoltage = 12 / robot.slides.leftSlideVoltage.getVoltage();
+        double finalRightSlideVoltage = 12 / robot.slides.rightSlideVoltage.getVoltage();
+        double finalDriveVoltageMean = 12 /((leftDriveVoltage + rightDriveVoltage + leftBackVoltage + rightBackVoltage) / 4);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -167,6 +177,11 @@ abstract public class AutoParent extends LinearOpMode  {
         dropCone();
         park();
     }
+
+    protected void setSlidePowerWithVoltage(double power){
+        robot.slides.rightSlide.setPower(power * finalRightSlideVoltage);
+        robot.slides.leftSlide.setPower(-power * finalLeftSlideVoltage);
+    }
     protected void goToJunctionFromStart(){
         //for medium goal
         /*Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
@@ -182,16 +197,14 @@ abstract public class AutoParent extends LinearOpMode  {
         back(10);
         odoDriveTrain.turn(Math.toRadians(adjustTurn(-43)));
         forward(10.5);*/
-
-        robot.slides.rightSlide.setPower(.7);
-        robot.slides.leftSlide.setPower(-.7);
+        setSlidePowerWithVoltage(.7);
         //forward(52);
         //odoDriveTrain.turn(Math.toRadians(90));
         //odoDriveTrain.turn(Math.toRadians(-49));
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74), Math.toRadians(adjustTurn(15))))
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74) * finalDriveVoltageMean, Math.toRadians(adjustTurn(15) * finalDriveVoltageMean)))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
         //strafeleft(78.2);
@@ -199,11 +212,9 @@ abstract public class AutoParent extends LinearOpMode  {
     }
     protected void dropCone()   {
         robot.claw.setPosition(OPEN_CLAW);
-        robot.slides.rightSlide.setPower(-1);
-        robot.slides.leftSlide.setPower(1);
+        setSlidePowerWithVoltage(-1);
         sleep(300);
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
+        setSlidePowerWithVoltage(0);
         telemetry.addData("dropPreloadFreight", "dropPreloadFreight");
         telemetry.update();
     }
@@ -211,8 +222,7 @@ abstract public class AutoParent extends LinearOpMode  {
 
         //back(3);
         //straferight(10);
-        robot.slides.rightSlide.setPower(-.29);
-        robot.slides.leftSlide.setPower(.29);
+       setSlidePowerWithVoltage(-.29);
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory backright = odoDriveTrain.trajectoryBuilder(new Pose2d())
@@ -220,13 +230,11 @@ abstract public class AutoParent extends LinearOpMode  {
                 .build();
         odoDriveTrain.followTrajectory(backright);
         odoDriveTrain.turn(Math.toRadians(adjustTurn(200)));
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
+      setSlidePowerWithVoltage(0);
         forward(28);
         robot.claw.setPosition(CLOSED_CLAW);
         sleep(800);
-        robot.slides.rightSlide.setPower(.65);
-        robot.slides.leftSlide.setPower(-.65);
+       setSlidePowerWithVoltage(.65);
         sleep(300);
 
     }
@@ -235,16 +243,13 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         odoDriveTrain.turn(Math.toRadians(adjustTurn(145)));
-        robot.slides.rightSlide.setPower(-.39);
-        robot.slides.leftSlide.setPower(.39);
+        setSlidePowerWithVoltage(-.39);
         sleep(time);
         forward(32);
-        robot.slides.rightSlide.setPower(0);
-        robot.slides.leftSlide.setPower(0);
+        setSlidePowerWithVoltage(0);
         robot.claw.setPosition(CLOSED_CLAW);
         sleep(800);
-        robot.slides.rightSlide.setPower(.65);
-        robot.slides.leftSlide.setPower(-.65);
+       setSlidePowerWithVoltage(.65);
         sleep(300);
 
     }
@@ -271,7 +276,7 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory back = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
-                .back(inches)
+                .back(inches * finalDriveVoltageMean)
                 .build();
         odoDriveTrain.followTrajectory(back);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
@@ -282,7 +287,7 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory forward = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
-                .forward(inches)
+                .forward(inches * finalDriveVoltageMean)
                 .build();
         odoDriveTrain.followTrajectory(forward);
         // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));

@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -62,6 +63,7 @@ public class TechiesHardwareWithoutDriveTrain
     //public DcMotor  rightBack   = null;
     public TechiesSlideHardware slides = null;
     public Servo   claw = null;
+    public VoltageSensor clawVoltage;
 
     public DcMotor  leftSlide    = null;
     public DcMotor  rightSlide   = null;
@@ -82,7 +84,6 @@ public class TechiesHardwareWithoutDriveTrain
         slides = new TechiesSlideHardware(hwMap);
         claw = hwMap.get(Servo.class, "claw");
         claw.setPosition(1);  // TODO KL: is this correct?
-
         }
 
     public void init(HardwareMap hardwareMap) {
