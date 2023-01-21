@@ -71,7 +71,7 @@ abstract public class AutoParent extends LinearOpMode  {
     double fy = 578.272;
     double cx = 402.145;
     double cy = 221.506;
-    static final double OPEN_CLAW = .5;
+    static final double OPEN_CLAW = 0;
     static final double CLOSED_CLAW = 1;
     // UNITS ARE METERS
     double tagsize = 0.166;
@@ -200,11 +200,13 @@ abstract public class AutoParent extends LinearOpMode  {
         telemetry.addData("Voltage Multiplier", batteryVoltageMultiplier);        //Adding data to determine if the battery voltage multiplier exists or not
         telemetry.update();
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74) , Math.toRadians(adjustTurn(15 ) )))
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(61) , Math.toRadians(adjustTurn(15 ) )))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
         //strafeleft(78.2);
-        forward(3.5);
+        sleep(100);
+        forward(2.0);
+        sleep(100);
     }
     protected void dropCone()   {
         robot.claw.setPosition(OPEN_CLAW);
@@ -222,10 +224,10 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory backright = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(-13, adjustTrajectorydistance(-13), Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-2, adjustTrajectorydistance(-2), Math.toRadians(0)))
                 .build();
         odoDriveTrain.followTrajectory(backright);
-        odoDriveTrain.turn(Math.toRadians(adjustTurn(200)));
+        odoDriveTrain.turn(Math.toRadians(adjustTurn(130)));
       setSlidePowerWithVoltage(0);
         forward(28);
         robot.claw.setPosition(CLOSED_CLAW);

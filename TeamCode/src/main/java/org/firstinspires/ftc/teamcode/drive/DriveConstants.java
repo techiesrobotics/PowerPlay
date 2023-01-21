@@ -64,8 +64,8 @@ public class DriveConstants {
      * empirically tuned.
      */
 
-    public static double kV = 0.13866;
-    public static double kA = 0.0045;
+    public static double kV = 0.013866;
+    public static double kA = 0.004;
     public static double kStatic = 0.0017;
 
     //for big robot
@@ -102,8 +102,8 @@ public class DriveConstants {
 
      */
 
-    public static double MAX_VEL = 73.17330064499293;
-    public static double MAX_ACCEL = 53.17330064499293;
+    public static double MAX_VEL = 45; // original 73
+    public static double MAX_ACCEL = 125; // original 53
     //if something breaks change MAX_ACCEL to 73.17330064499293
     public static double MAX_ANG_VEL = Math.toRadians(310.55713333333335);
     public static double MAX_ANG_ACCEL = Math.toRadians(310.55713333333335);

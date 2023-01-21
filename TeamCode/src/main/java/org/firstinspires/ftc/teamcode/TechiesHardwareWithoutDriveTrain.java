@@ -29,13 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -64,9 +60,8 @@ public class TechiesHardwareWithoutDriveTrain
     public TechiesSlideHardware slides = null;
     public Servo   claw = null;
     /* Retractable Claws defined below */
-    public Servo rightRetractableClaw;
-    public Servo leftRetractableClaw;
-    public Servo backRetractableClaw;
+    public Servo rightOdo;
+    public Servo leftOdo;
 
     public DcMotor  leftSlide    = null;
     public DcMotor  rightSlide   = null;
@@ -87,11 +82,12 @@ public class TechiesHardwareWithoutDriveTrain
         slides = new TechiesSlideHardware(hwMap);
         claw = hwMap.get(Servo.class, "claw");
         claw.setPosition(1);  // TODO KL: is this correct?
-       /* rightRetractableClaw
-        leftRetractableClaw
-        backRetractableClaw
-        */
-        }
+        leftOdo = hwMap.get(Servo.class, "leftodo");
+        rightOdo = hwMap.get(Servo.class, "rightodo");
+        rightOdo.setPosition(1);
+
+
+    }
 
     public void init(HardwareMap hardwareMap) {
 

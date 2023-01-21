@@ -44,7 +44,7 @@ public class OnePlayerOpMode extends TechiesOpMode {
     }
 
 
-    public void moveSlideWithButton() {
+    /*public void moveSlideWithButton() {
         // low
         if (gamepad1.x) {
             encoderSlide(1, -19, 19, 3);
@@ -59,6 +59,8 @@ public class OnePlayerOpMode extends TechiesOpMode {
             encoderSlide(1, -39, 39, 3);
         }
     }
+
+     */
 
    /* public double driveSpeed() {
         double Multiplier = 1;
