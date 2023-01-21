@@ -95,7 +95,7 @@ abstract public class AutoParent extends LinearOpMode  {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         double actualBatteryVoltage = odoDriveTrain.batteryVoltageSensor.getVoltage();
-        batteryVoltageMultiplier = new Double(3d/actualBatteryVoltage).doubleValue();
+        batteryVoltageMultiplier = new Double(12d/actualBatteryVoltage).doubleValue();
         telemetry.addData("actualBatteryVoltage", actualBatteryVoltage);
         telemetry.addData("batteryVoltageMultiplier", batteryVoltageMultiplier);
         camera.setPipeline(aprilTagDetectionPipeline);
@@ -173,8 +173,8 @@ abstract public class AutoParent extends LinearOpMode  {
     }
     //Voltage sensor testing: Changed setting slide power into method
     protected void setSlidePowerWithVoltage(double power){
-        robot.slides.rightSlide.setPower(power);
-        robot.slides.leftSlide.setPower(-power);
+        robot.slides.rightSlide.setPower(power * batteryVoltageMultiplier);
+        robot.slides.leftSlide.setPower(-power * batteryVoltageMultiplier);
     }
     protected void goToJunctionFromStart(){
         //for medium goal
@@ -200,7 +200,7 @@ abstract public class AutoParent extends LinearOpMode  {
         telemetry.addData("Voltage Multiplier", batteryVoltageMultiplier);        //Adding data to determine if the battery voltage multiplier exists or not
         telemetry.update();
         Trajectory turnstrafe = odoDriveTrain.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74 * batteryVoltageMultiplier) , Math.toRadians(adjustTurn(15 * batteryVoltageMultiplier) )))
+                .lineToLinearHeading(new Pose2d(0, adjustTrajectorydistance(74) , Math.toRadians(adjustTurn(15 ) )))
                 .build();
         odoDriveTrain.followTrajectory(turnstrafe);
         //strafeleft(78.2);
@@ -272,7 +272,7 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory back = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
-                .back(inches * batteryVoltageMultiplier)
+                .back(inches)
                 .build();
         odoDriveTrain.followTrajectory(back);
         Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
@@ -283,7 +283,7 @@ abstract public class AutoParent extends LinearOpMode  {
         Pose2d startPose = new Pose2d(0,0, Math.toRadians(0));
         odoDriveTrain.setPoseEstimate(startPose);
         Trajectory forward = odoDriveTrain.trajectoryBuilder(new Pose2d(0,0,0))
-                .forward(inches * batteryVoltageMultiplier)
+                .forward(inches)
                 .build();
         odoDriveTrain.followTrajectory(forward);
         // Pose2d startPose2 = new Pose2d(0,0, Math.toRadians(0));
