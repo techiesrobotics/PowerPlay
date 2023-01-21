@@ -63,7 +63,10 @@ public class TechiesHardwareWithoutDriveTrain
     //public DcMotor  rightBack   = null;
     public TechiesSlideHardware slides = null;
     public Servo   claw = null;
-    public VoltageSensor clawVoltage;
+    /* Retractable Claws defined below */
+    public Servo rightRetractableClaw;
+    public Servo leftRetractableClaw;
+    public Servo backRetractableClaw;
 
     public DcMotor  leftSlide    = null;
     public DcMotor  rightSlide   = null;
@@ -84,6 +87,10 @@ public class TechiesHardwareWithoutDriveTrain
         slides = new TechiesSlideHardware(hwMap);
         claw = hwMap.get(Servo.class, "claw");
         claw.setPosition(1);  // TODO KL: is this correct?
+       /* rightRetractableClaw
+        leftRetractableClaw
+        backRetractableClaw
+        */
         }
 
     public void init(HardwareMap hardwareMap) {

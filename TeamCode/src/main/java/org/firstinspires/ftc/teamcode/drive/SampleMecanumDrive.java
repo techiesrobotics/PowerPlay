@@ -75,7 +75,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
-    private VoltageSensor batteryVoltageSensor;
+    public VoltageSensor batteryVoltageSensor;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);

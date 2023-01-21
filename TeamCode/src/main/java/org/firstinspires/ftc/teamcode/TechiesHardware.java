@@ -60,7 +60,6 @@ public class TechiesHardware
     public DcMotor  rightDrive  = null;
     public DcMotor  leftBack    = null;
     public DcMotor  rightBack   = null;
-    public VoltageSensor leftDriveVoltage, rightDriveVoltage, leftBackVoltage, rightBackVoltage;
 
     /* local OpMode members. */
     HardwareMap hwMap     =  null;
@@ -82,10 +81,7 @@ public class TechiesHardware
         rightDrive = hwMap.get(DcMotor.class, "frontright");
         leftBack  = hwMap.get(DcMotor.class, "backleft");
         rightBack    = hwMap.get(DcMotor.class, "backright");
-        leftDriveVoltage = hwMap.voltageSensor.get("frontleft");
-        rightDriveVoltage = hwMap.voltageSensor.get("frontright");
-        leftBackVoltage = hwMap.voltageSensor.get("frontleft");
-        rightBackVoltage = hwMap.voltageSensor.get("frontleft");
+
 
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
