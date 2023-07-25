@@ -2,8 +2,13 @@ package org.firstinspires.ftc.teamcode.DriverControlOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.PIDtest;
+import org.firstinspires.ftc.teamcode.TechiesSlideHardware;
+
 @TeleOp(name="1 Player: DriverControlOpMode", group="Linear Opmode")
 public class OnePlayerOpMode extends TechiesOpMode {
+    PIDtest pidSlides = new PIDtest();
+    TechiesSlideHardware theActualSlides = new TechiesSlideHardware(hardwareMap);
     public double getTurn() {
         double turn = gamepad1.right_stick_x;
         return turn;
@@ -37,9 +42,9 @@ public class OnePlayerOpMode extends TechiesOpMode {
             robotCore.slides.rightSlide.setPower(-0.001);
             robotCore.slides.leftSlide.setPower(0.001);
         }
-        //if (gamepad1.b)  {
-        //  encoderSlide(1,10,10,5);
-        //}
+        if (gamepad1.b)  {
+            pidSlides.slideMovementPID(theActualSlides, 500);
+        }
 
     }
 

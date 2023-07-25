@@ -57,8 +57,8 @@ public class TechiesSlideHardware
     /* Public OpMode members. hi*/
 
 
-    public DcMotor  leftSlide    = null;
-    public DcMotor  rightSlide   = null;
+    public DcMotorEx  leftSlide    = null;
+    public DcMotorEx  rightSlide   = null;
 
     /* local OpMode members. */
     HardwareMap hwMap     =  null;
@@ -71,14 +71,14 @@ public class TechiesSlideHardware
 
         // Define and Initialize Motors
 
-        leftSlide  = hwMap.get(DcMotor.class, "leftslide");
-        rightSlide    = hwMap.get(DcMotor.class, "rightslide");
+        leftSlide  = hwMap.get(DcMotorEx.class, "leftslide");
+        rightSlide    = hwMap.get(DcMotorEx.class, "rightslide");
 
-        leftSlide.setDirection(DcMotor.Direction.REVERSE);
-        rightSlide.setDirection(DcMotor.Direction.FORWARD);
+        leftSlide.setDirection(DcMotorEx.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorEx.Direction.FORWARD);
 
-        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         //leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -99,8 +99,8 @@ public class TechiesSlideHardware
     public void retractSlides() {
         rightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
         leftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-        rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         leftSlide.setPower(0);
         rightSlide.setPower(0);
     }
