@@ -77,8 +77,8 @@ public class TechiesSlideHardware
         leftSlide.setDirection(DcMotorEx.Direction.REVERSE);
         rightSlide.setDirection(DcMotorEx.Direction.FORWARD);
 
-        leftSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        rightSlide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 

@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.TechiesSlideHardware;
 
 @TeleOp(name="1 Player: DriverControlOpMode", group="Linear Opmode")
 public class OnePlayerOpMode extends TechiesOpMode {
-    PIDtest pidSlides = new PIDtest();
-    TechiesSlideHardware theActualSlides = new TechiesSlideHardware(hardwareMap);
+    PIDtest pidSlides;
+    TechiesSlideHardware theActualSlides;
     public double getTurn() {
         double turn = gamepad1.right_stick_x;
         return turn;
@@ -43,6 +43,8 @@ public class OnePlayerOpMode extends TechiesOpMode {
             robotCore.slides.leftSlide.setPower(0.001);
         }
         if (gamepad1.b)  {
+            theActualSlides = new TechiesSlideHardware(hardwareMap);
+            pidSlides = new PIDtest();
             pidSlides.slideMovementPID(theActualSlides, 500);
         }
 

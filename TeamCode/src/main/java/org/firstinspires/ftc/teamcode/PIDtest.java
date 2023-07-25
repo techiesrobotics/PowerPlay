@@ -36,12 +36,12 @@ public class PIDtest  {
         if (currentVelocity > maxVelocity)
             maxVelocity = currentVelocity;
 
-        telemetry.addData("current velocity", currentVelocity);
+        /*telemetry.addData("current velocity", currentVelocity);
         telemetry.addData("current position", currentPos);
         telemetry.addData("position delta", currentPos- slides.rightSlide.getTargetPosition());
         telemetry.addData("power", slides.rightSlide.getPower());
         telemetry.addData("repetitions", repetitions);
-        telemetry.update();
+        telemetry.update();*/
         repetitions++;
     }
 }
